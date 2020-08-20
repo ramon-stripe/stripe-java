@@ -36,10 +36,6 @@ public class Subscription extends ApiResource implements HasId, MetadataStore<Su
   @SerializedName("billing_cycle_anchor")
   Long billingCycleAnchor;
 
-  /**
-   * Define thresholds at which an invoice will be sent, and the subscription advanced to a new
-   * billing period.
-   */
   @SerializedName("billing_thresholds")
   BillingThresholds billingThresholds;
 
@@ -133,8 +129,11 @@ public class Subscription extends ApiResource implements HasId, MetadataStore<Su
   List<TaxRate> defaultTaxRates;
 
   /**
-   * Describes the current discount applied to this subscription, if there is one. When billing, a
-   * discount applied to a subscription overrides a discount applied on a customer-wide basis.
+   * A discount represents the actual application of a coupon to a particular customer. It contains
+   * information about when the discount began and when it will end.
+   *
+   * <p>Related guide: <a href="https://stripe.com/docs/billing/subscriptions/discounts">Applying
+   * Discounts to Subscriptions</a>.
    */
   @SerializedName("discount")
   Discount discount;
@@ -189,15 +188,13 @@ public class Subscription extends ApiResource implements HasId, MetadataStore<Su
   @SerializedName("object")
   String object;
 
-  /** If specified, payment collection for this subscription will be paused. */
+  /**
+   * The Pause Collection settings determine how we will pause collection for this subscription and
+   * for how long the subscription should be paused.
+   */
   @SerializedName("pause_collection")
   PauseCollection pauseCollection;
 
-  /**
-   * Specifies an interval for how often to bill for any pending invoice items. It is analogous to
-   * calling <a href="https://stripe.com/docs/api#create_invoice">Create an invoice</a> for the
-   * given subscription at the specified interval.
-   */
   @SerializedName("pending_invoice_item_interval")
   PendingInvoiceItemInterval pendingInvoiceItemInterval;
 
@@ -215,9 +212,8 @@ public class Subscription extends ApiResource implements HasId, MetadataStore<Su
   ExpandableField<SetupIntent> pendingSetupIntent;
 
   /**
-   * If specified, <a href="https://stripe.com/docs/billing/subscriptions/pending-updates">pending
-   * updates</a> that will be applied to the subscription once the {@code latest_invoice} has been
-   * paid.
+   * Pending Updates store the changes pending from a previous update that will be applied to the
+   * Subscription upon successful payment.
    */
   @SerializedName("pending_update")
   PendingUpdate pendingUpdate;
@@ -288,10 +284,6 @@ public class Subscription extends ApiResource implements HasId, MetadataStore<Su
   @SerializedName("tax_percent")
   BigDecimal taxPercent;
 
-  /**
-   * The account (if any) the subscription's payments will be attributed to for tax reporting, and
-   * where funds from each payment will be transferred to for each of the subscription's invoices.
-   */
   @SerializedName("transfer_data")
   TransferData transferData;
 
@@ -739,6 +731,123 @@ public class Subscription extends ApiResource implements HasId, MetadataStore<Su
      */
     @SerializedName("reset_billing_cycle_anchor")
     Boolean resetBillingCycleAnchor;
+  }
+
+  @Getter
+  @Setter
+  @EqualsAndHashCode(callSuper = false)
+  public static class Discount extends StripeObject implements HasId {
+    /**
+     * A coupon contains information about a percent-off or amount-off discount you might want to
+     * apply to a customer. Coupons may be applied to <a
+     * href="https://stripe.com/docs/api#invoices">invoices</a> or <a
+     * href="https://stripe.com/docs/api#create_order-coupon">orders</a>. Coupons do not work with
+     * conventional one-off <a href="https://stripe.com/docs/api#create_charge">charges</a>.
+     */
+    @SerializedName("coupon")
+    Coupon coupon;
+
+    /** The ID of the customer associated with this discount. */
+    @SerializedName("customer")
+    @Getter(lombok.AccessLevel.NONE)
+    @Setter(lombok.AccessLevel.NONE)
+    ExpandableField<Customer> customer;
+
+    /** Always true for a deleted object. */
+    @SerializedName("deleted")
+    Boolean deleted;
+
+    /**
+     * If the coupon has a duration of {@code repeating}, the date that this discount will end. If
+     * the coupon has a duration of {@code once} or {@code forever}, this attribute will be null.
+     */
+    @SerializedName("end")
+    Long end;
+
+    /**
+     * The ID of the discount object. Discounts cannot be fetched by ID. Use {@code
+     * expand[]=discounts} in API calls to expand discount IDs in an array.
+     */
+    @Getter(onMethod_ = {@Override})
+    @SerializedName("id")
+    String id;
+
+    /**
+     * The invoice that the discount's coupon was applied to, if it was applied directly to a
+     * particular invoice.
+     */
+    @SerializedName("invoice")
+    String invoice;
+
+    /**
+     * The invoice item {@code id} (or invoice line item {@code id} for invoice line items of
+     * type='subscription') that the discount's coupon was applied to, if it was applied directly to
+     * a particular invoice item or invoice line item.
+     */
+    @SerializedName("invoice_item")
+    String invoiceItem;
+
+    /**
+     * String representing the object's type. Objects of the same type share the same value.
+     *
+     * <p>Equal to {@code discount}.
+     */
+    @SerializedName("object")
+    String object;
+
+    /** The promotion code applied to create this discount. */
+    @SerializedName("promotion_code")
+    @Getter(lombok.AccessLevel.NONE)
+    @Setter(lombok.AccessLevel.NONE)
+    ExpandableField<PromotionCode> promotionCode;
+
+    /** Date that the coupon was applied. */
+    @SerializedName("start")
+    Long start;
+
+    /**
+     * The subscription that this coupon is applied to, if it is applied to a particular
+     * subscription.
+     */
+    @SerializedName("subscription")
+    String subscription;
+
+    /** Get ID of expandable {@code customer} object. */
+    public String getCustomer() {
+      return (this.customer != null) ? this.customer.getId() : null;
+    }
+
+    public void setCustomer(String id) {
+      this.customer = ApiResource.setExpandableFieldId(id, this.customer);
+    }
+
+    /** Get expanded {@code customer}. */
+    public Customer getCustomerObject() {
+      return (this.customer != null) ? this.customer.getExpanded() : null;
+    }
+
+    public void setCustomerObject(Customer expandableObject) {
+      this.customer = new ExpandableField<Customer>(expandableObject.getId(), expandableObject);
+    }
+
+    /** Get ID of expandable {@code promotionCode} object. */
+    public String getPromotionCode() {
+      return (this.promotionCode != null) ? this.promotionCode.getId() : null;
+    }
+
+    public void setPromotionCode(String id) {
+      this.promotionCode = ApiResource.setExpandableFieldId(id, this.promotionCode);
+    }
+
+    /** Get expanded {@code promotionCode}. */
+    public PromotionCode getPromotionCodeObject() {
+      return (this.promotionCode != null) ? this.promotionCode.getExpanded() : null;
+    }
+
+    public void setPromotionCodeObject(PromotionCode expandableObject) {
+      this.promotionCode =
+          new ExpandableField<PromotionCode>(expandableObject.getId(), expandableObject);
+    }
   }
 
   @Getter

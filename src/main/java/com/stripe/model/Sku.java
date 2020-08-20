@@ -9,6 +9,7 @@ import com.stripe.param.SkuCreateParams;
 import com.stripe.param.SkuListParams;
 import com.stripe.param.SkuRetrieveParams;
 import com.stripe.param.SkuUpdateParams;
+import java.math.BigDecimal;
 import java.util.Map;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -81,7 +82,6 @@ public class Sku extends ApiResource implements HasId, MetadataStore<Sku> {
   @SerializedName("object")
   String object;
 
-  /** The dimensions of this SKU for shipping purposes. */
   @SerializedName("package_dimensions")
   PackageDimensions packageDimensions;
 
@@ -325,5 +325,26 @@ public class Sku extends ApiResource implements HasId, MetadataStore<Sku> {
      */
     @SerializedName("value")
     String value;
+  }
+
+  @Getter
+  @Setter
+  @EqualsAndHashCode(callSuper = false)
+  public static class PackageDimensions extends StripeObject {
+    /** Height, in inches. */
+    @SerializedName("height")
+    BigDecimal height;
+
+    /** Length, in inches. */
+    @SerializedName("length")
+    BigDecimal length;
+
+    /** Weight, in ounces. */
+    @SerializedName("weight")
+    BigDecimal weight;
+
+    /** Width, in inches. */
+    @SerializedName("width")
+    BigDecimal width;
   }
 }

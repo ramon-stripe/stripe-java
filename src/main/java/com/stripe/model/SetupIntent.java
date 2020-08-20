@@ -21,11 +21,8 @@ import lombok.Setter;
 @Setter
 @EqualsAndHashCode(callSuper = false)
 public class SetupIntent extends ApiResource implements HasId, MetadataStore<SetupIntent> {
-  /** ID of the Connect application that created the SetupIntent. */
   @SerializedName("application")
-  @Getter(lombok.AccessLevel.NONE)
-  @Setter(lombok.AccessLevel.NONE)
-  ExpandableField<Application> application;
+  Application application;
 
   /**
    * Reason for cancellation of this SetupIntent, one of {@code abandoned}, {@code
@@ -94,10 +91,6 @@ public class SetupIntent extends ApiResource implements HasId, MetadataStore<Set
   @SerializedName("metadata")
   Map<String, String> metadata;
 
-  /**
-   * If present, this property tells you what actions you need to take in order for your customer to
-   * continue payment setup.
-   */
   @SerializedName("next_action")
   NextAction nextAction;
 
@@ -121,7 +114,6 @@ public class SetupIntent extends ApiResource implements HasId, MetadataStore<Set
   @Setter(lombok.AccessLevel.NONE)
   ExpandableField<PaymentMethod> paymentMethod;
 
-  /** Payment-method-specific configuration for this SetupIntent. */
   @SerializedName("payment_method_options")
   PaymentMethodOptions paymentMethodOptions;
 
@@ -152,24 +144,6 @@ public class SetupIntent extends ApiResource implements HasId, MetadataStore<Set
    */
   @SerializedName("usage")
   String usage;
-
-  /** Get ID of expandable {@code application} object. */
-  public String getApplication() {
-    return (this.application != null) ? this.application.getId() : null;
-  }
-
-  public void setApplication(String id) {
-    this.application = ApiResource.setExpandableFieldId(id, this.application);
-  }
-
-  /** Get expanded {@code application}. */
-  public Application getApplicationObject() {
-    return (this.application != null) ? this.application.getExpanded() : null;
-  }
-
-  public void setApplicationObject(Application expandableObject) {
-    this.application = new ExpandableField<Application>(expandableObject.getId(), expandableObject);
-  }
 
   /** Get ID of expandable {@code customer} object. */
   public String getCustomer() {
@@ -643,6 +617,28 @@ public class SetupIntent extends ApiResource implements HasId, MetadataStore<Set
   @Getter
   @Setter
   @EqualsAndHashCode(callSuper = false)
+  public static class Application extends StripeObject implements HasId {
+    /** Unique identifier for the object. */
+    @Getter(onMethod_ = {@Override})
+    @SerializedName("id")
+    String id;
+
+    /** The name of the application. */
+    @SerializedName("name")
+    String name;
+
+    /**
+     * String representing the object's type. Objects of the same type share the same value.
+     *
+     * <p>Equal to {@code application}.
+     */
+    @SerializedName("object")
+    String object;
+  }
+
+  @Getter
+  @Setter
+  @EqualsAndHashCode(callSuper = false)
   public static class NextAction extends StripeObject {
     @SerializedName("redirect_to_url")
     NextActionRedirectToUrl redirectToUrl;
@@ -660,6 +656,22 @@ public class SetupIntent extends ApiResource implements HasId, MetadataStore<Set
      */
     @SerializedName("use_stripe_sdk")
     Map<String, Object> useStripeSdk;
+
+    @Getter
+    @Setter
+    @EqualsAndHashCode(callSuper = false)
+    public static class NextActionRedirectToUrl extends StripeObject {
+      /**
+       * If the customer does not exit their browser while authenticating, they will be redirected
+       * to this specified URL after completion.
+       */
+      @SerializedName("return_url")
+      String returnUrl;
+
+      /** The URL you must redirect your customer to in order to authenticate. */
+      @SerializedName("url")
+      String url;
+    }
   }
 
   @Getter

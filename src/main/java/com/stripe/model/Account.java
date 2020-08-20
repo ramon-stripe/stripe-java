@@ -22,7 +22,6 @@ import lombok.Setter;
 @Setter
 @EqualsAndHashCode(callSuper = false)
 public class Account extends ApiResource implements MetadataStore<Account>, PaymentSource {
-  /** Business information about the account. */
   @SerializedName("business_profile")
   BusinessProfile businessProfile;
 
@@ -119,7 +118,6 @@ public class Account extends ApiResource implements MetadataStore<Account>, Paym
   @SerializedName("requirements")
   Requirements requirements;
 
-  /** Options for customizing how the account functions within Stripe. */
   @SerializedName("settings")
   Settings settings;
 
@@ -590,7 +588,6 @@ public class Account extends ApiResource implements MetadataStore<Account>, Paym
     @SerializedName("product_description")
     String productDescription;
 
-    /** A publicly available mailing address for sending support issues to. */
     @SerializedName("support_address")
     Address supportAddress;
 
@@ -609,6 +606,38 @@ public class Account extends ApiResource implements MetadataStore<Account>, Paym
     /** The business's publicly available website. */
     @SerializedName("url")
     String url;
+
+    @Getter
+    @Setter
+    @EqualsAndHashCode(callSuper = false)
+    public static class Address extends StripeObject {
+      /** City, district, suburb, town, or village. */
+      @SerializedName("city")
+      String city;
+
+      /**
+       * Two-letter country code (<a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2">ISO
+       * 3166-1 alpha-2</a>).
+       */
+      @SerializedName("country")
+      String country;
+
+      /** Address line 1 (e.g., street, PO Box, or company name). */
+      @SerializedName("line1")
+      String line1;
+
+      /** Address line 2 (e.g., apartment, suite, unit, or building). */
+      @SerializedName("line2")
+      String line2;
+
+      /** ZIP or postal code. */
+      @SerializedName("postal_code")
+      String postalCode;
+
+      /** State, county, province, or region. */
+      @SerializedName("state")
+      String state;
+    }
   }
 
   @Getter
@@ -719,13 +748,11 @@ public class Account extends ApiResource implements MetadataStore<Account>, Paym
     @SerializedName("address")
     Address address;
 
-    /** The Kana variation of the company's primary address (Japan only). */
     @SerializedName("address_kana")
-    Person.JapanAddress addressKana;
+    JapanAddress addressKana;
 
-    /** The Kanji variation of the company's primary address (Japan only). */
     @SerializedName("address_kanji")
-    Person.JapanAddress addressKanji;
+    JapanAddress addressKanji;
 
     /**
      * Whether the company's directors have been provided. This Boolean will be {@code true} if
@@ -803,9 +830,76 @@ public class Account extends ApiResource implements MetadataStore<Account>, Paym
     @SerializedName("vat_id_provided")
     Boolean vatIdProvided;
 
-    /** Information on the verification state of the company. */
     @SerializedName("verification")
     Verification verification;
+
+    @Getter
+    @Setter
+    @EqualsAndHashCode(callSuper = false)
+    public static class Address extends StripeObject {
+      /** City, district, suburb, town, or village. */
+      @SerializedName("city")
+      String city;
+
+      /**
+       * Two-letter country code (<a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2">ISO
+       * 3166-1 alpha-2</a>).
+       */
+      @SerializedName("country")
+      String country;
+
+      /** Address line 1 (e.g., street, PO Box, or company name). */
+      @SerializedName("line1")
+      String line1;
+
+      /** Address line 2 (e.g., apartment, suite, unit, or building). */
+      @SerializedName("line2")
+      String line2;
+
+      /** ZIP or postal code. */
+      @SerializedName("postal_code")
+      String postalCode;
+
+      /** State, county, province, or region. */
+      @SerializedName("state")
+      String state;
+    }
+
+    @Getter
+    @Setter
+    @EqualsAndHashCode(callSuper = false)
+    public static class JapanAddress extends StripeObject {
+      /** City/Ward. */
+      @SerializedName("city")
+      String city;
+
+      /**
+       * Two-letter country code (<a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2">ISO
+       * 3166-1 alpha-2</a>).
+       */
+      @SerializedName("country")
+      String country;
+
+      /** Block/Building number. */
+      @SerializedName("line1")
+      String line1;
+
+      /** Building details. */
+      @SerializedName("line2")
+      String line2;
+
+      /** ZIP or postal code. */
+      @SerializedName("postal_code")
+      String postalCode;
+
+      /** Prefecture. */
+      @SerializedName("state")
+      String state;
+
+      /** Town/cho-me. */
+      @SerializedName("town")
+      String town;
+    }
 
     @Getter
     @Setter
@@ -973,12 +1067,8 @@ public class Account extends ApiResource implements MetadataStore<Account>, Paym
     @SerializedName("disabled_reason")
     String disabledReason;
 
-    /**
-     * The fields that are {@code currently_due} and need to be collected again because validation
-     * or verification failed for some reason.
-     */
     @SerializedName("errors")
-    List<Account.Requirements.Errors> errors;
+    Errors errors;
 
     /**
      * The fields that need to be collected assuming all volume thresholds are reached. As they
@@ -1094,6 +1184,213 @@ public class Account extends ApiResource implements MetadataStore<Account>, Paym
       @SerializedName("creditor_id")
       String creditorId;
     }
+
+    @Getter
+    @Setter
+    @EqualsAndHashCode(callSuper = false)
+    public static class SettingsBranding extends StripeObject {
+      /**
+       * (ID of a <a href="https://stripe.com/docs/guides/file-upload">file upload</a>) An icon for
+       * the account. Must be square and at least 128px x 128px.
+       */
+      @SerializedName("icon")
+      @Getter(lombok.AccessLevel.NONE)
+      @Setter(lombok.AccessLevel.NONE)
+      ExpandableField<File> icon;
+
+      /**
+       * (ID of a <a href="https://stripe.com/docs/guides/file-upload">file upload</a>) A logo for
+       * the account that will be used in Checkout instead of the icon and without the account's
+       * name next to it if provided. Must be at least 128px x 128px.
+       */
+      @SerializedName("logo")
+      @Getter(lombok.AccessLevel.NONE)
+      @Setter(lombok.AccessLevel.NONE)
+      ExpandableField<File> logo;
+
+      /** A CSS hex color value representing the primary branding color for this account. */
+      @SerializedName("primary_color")
+      String primaryColor;
+
+      /** A CSS hex color value representing the secondary branding color for this account. */
+      @SerializedName("secondary_color")
+      String secondaryColor;
+
+      /** Get ID of expandable {@code icon} object. */
+      public String getIcon() {
+        return (this.icon != null) ? this.icon.getId() : null;
+      }
+
+      public void setIcon(String id) {
+        this.icon = ApiResource.setExpandableFieldId(id, this.icon);
+      }
+
+      /** Get expanded {@code icon}. */
+      public File getIconObject() {
+        return (this.icon != null) ? this.icon.getExpanded() : null;
+      }
+
+      public void setIconObject(File expandableObject) {
+        this.icon = new ExpandableField<File>(expandableObject.getId(), expandableObject);
+      }
+
+      /** Get ID of expandable {@code logo} object. */
+      public String getLogo() {
+        return (this.logo != null) ? this.logo.getId() : null;
+      }
+
+      public void setLogo(String id) {
+        this.logo = ApiResource.setExpandableFieldId(id, this.logo);
+      }
+
+      /** Get expanded {@code logo}. */
+      public File getLogoObject() {
+        return (this.logo != null) ? this.logo.getExpanded() : null;
+      }
+
+      public void setLogoObject(File expandableObject) {
+        this.logo = new ExpandableField<File>(expandableObject.getId(), expandableObject);
+      }
+    }
+
+    @Getter
+    @Setter
+    @EqualsAndHashCode(callSuper = false)
+    public static class SettingsCardPayments extends StripeObject {
+      @SerializedName("decline_on")
+      DeclineChargeOn declineOn;
+
+      /**
+       * The default text that appears on credit card statements when a charge is made. This field
+       * prefixes any dynamic {@code statement_descriptor} specified on the charge. {@code
+       * statement_descriptor_prefix} is useful for maximizing descriptor space for the dynamic
+       * portion.
+       */
+      @SerializedName("statement_descriptor_prefix")
+      String statementDescriptorPrefix;
+
+      @Getter
+      @Setter
+      @EqualsAndHashCode(callSuper = false)
+      public static class DeclineChargeOn extends StripeObject {
+        /**
+         * Whether Stripe automatically declines charges with an incorrect ZIP or postal code. This
+         * setting only applies when a ZIP or postal code is provided and they fail bank
+         * verification.
+         */
+        @SerializedName("avs_failure")
+        Boolean avsFailure;
+
+        /**
+         * Whether Stripe automatically declines charges with an incorrect CVC. This setting only
+         * applies when a CVC is provided and it fails bank verification.
+         */
+        @SerializedName("cvc_failure")
+        Boolean cvcFailure;
+      }
+    }
+
+    @Getter
+    @Setter
+    @EqualsAndHashCode(callSuper = false)
+    public static class SettingsDashboard extends StripeObject {
+      /**
+       * The display name for this account. This is used on the Stripe Dashboard to differentiate
+       * between accounts.
+       */
+      @SerializedName("display_name")
+      String displayName;
+
+      /**
+       * The timezone used in the Stripe Dashboard for this account. A list of possible time zone
+       * values is maintained at the <a href="http://www.iana.org/time-zones">IANA Time Zone
+       * Database</a>.
+       */
+      @SerializedName("timezone")
+      String timezone;
+    }
+
+    @Getter
+    @Setter
+    @EqualsAndHashCode(callSuper = false)
+    public static class SettingsPayments extends StripeObject {
+      /**
+       * The default text that appears on credit card statements when a charge is made. This field
+       * prefixes any dynamic {@code statement_descriptor} specified on the charge.
+       */
+      @SerializedName("statement_descriptor")
+      String statementDescriptor;
+
+      /**
+       * The Kana variation of the default text that appears on credit card statements when a charge
+       * is made (Japan only).
+       */
+      @SerializedName("statement_descriptor_kana")
+      String statementDescriptorKana;
+
+      /**
+       * The Kanji variation of the default text that appears on credit card statements when a
+       * charge is made (Japan only).
+       */
+      @SerializedName("statement_descriptor_kanji")
+      String statementDescriptorKanji;
+    }
+
+    @Getter
+    @Setter
+    @EqualsAndHashCode(callSuper = false)
+    public static class SettingsPayouts extends StripeObject {
+      /**
+       * A Boolean indicating if Stripe should try to reclaim negative balances from an attached
+       * bank account. See our <a
+       * href="https://stripe.com/docs/connect/account-balances">Understanding Connect Account
+       * Balances</a> documentation for details. Default value is {@code true} for Express accounts
+       * and {@code false} for Custom accounts.
+       */
+      @SerializedName("debit_negative_balances")
+      Boolean debitNegativeBalances;
+
+      @SerializedName("schedule")
+      PayoutSchedule schedule;
+
+      /**
+       * The text that appears on the bank account statement for payouts. If not set, this defaults
+       * to the platform's bank descriptor as set in the Dashboard.
+       */
+      @SerializedName("statement_descriptor")
+      String statementDescriptor;
+
+      @Getter
+      @Setter
+      @EqualsAndHashCode(callSuper = false)
+      public static class PayoutSchedule extends StripeObject {
+        /** The number of days charges for the account will be held before being paid out. */
+        @SerializedName("delay_days")
+        Long delayDays;
+
+        /**
+         * How frequently funds will be paid out. One of {@code manual} (payouts only created via
+         * API call), {@code daily}, {@code weekly}, or {@code monthly}.
+         */
+        @SerializedName("interval")
+        String interval;
+
+        /**
+         * The day of the month funds will be paid out. Only shown if {@code interval} is monthly.
+         * Payouts scheduled between the 29th and 31st of the month are sent on the last day of
+         * shorter months.
+         */
+        @SerializedName("monthly_anchor")
+        Long monthlyAnchor;
+
+        /**
+         * The day of the week funds will be paid out, of the style 'monday', 'tuesday', etc. Only
+         * shown if {@code interval} is weekly.
+         */
+        @SerializedName("weekly_anchor")
+        String weeklyAnchor;
+      }
+    }
   }
 
   @Getter
@@ -1179,6 +1476,25 @@ public class Account extends ApiResource implements MetadataStore<Account>, Paym
      */
     @SerializedName("statement_descriptor_prefix")
     String statementDescriptorPrefix;
+
+    @Getter
+    @Setter
+    @EqualsAndHashCode(callSuper = false)
+    public static class DeclineChargeOn extends StripeObject {
+      /**
+       * Whether Stripe automatically declines charges with an incorrect ZIP or postal code. This
+       * setting only applies when a ZIP or postal code is provided and they fail bank verification.
+       */
+      @SerializedName("avs_failure")
+      Boolean avsFailure;
+
+      /**
+       * Whether Stripe automatically declines charges with an incorrect CVC. This setting only
+       * applies when a CVC is provided and it fails bank verification.
+       */
+      @SerializedName("cvc_failure")
+      Boolean cvcFailure;
+    }
   }
 
   @Getter
@@ -1249,6 +1565,37 @@ public class Account extends ApiResource implements MetadataStore<Account>, Paym
      */
     @SerializedName("statement_descriptor")
     String statementDescriptor;
+
+    @Getter
+    @Setter
+    @EqualsAndHashCode(callSuper = false)
+    public static class PayoutSchedule extends StripeObject {
+      /** The number of days charges for the account will be held before being paid out. */
+      @SerializedName("delay_days")
+      Long delayDays;
+
+      /**
+       * How frequently funds will be paid out. One of {@code manual} (payouts only created via API
+       * call), {@code daily}, {@code weekly}, or {@code monthly}.
+       */
+      @SerializedName("interval")
+      String interval;
+
+      /**
+       * The day of the month funds will be paid out. Only shown if {@code interval} is monthly.
+       * Payouts scheduled between the 29th and 31st of the month are sent on the last day of
+       * shorter months.
+       */
+      @SerializedName("monthly_anchor")
+      Long monthlyAnchor;
+
+      /**
+       * The day of the week funds will be paid out, of the style 'monday', 'tuesday', etc. Only
+       * shown if {@code interval} is weekly.
+       */
+      @SerializedName("weekly_anchor")
+      String weeklyAnchor;
+    }
   }
 
   @Getter

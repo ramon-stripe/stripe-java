@@ -33,11 +33,8 @@ public class ApplicationFee extends ApiResource implements BalanceTransactionSou
   @SerializedName("amount_refunded")
   Long amountRefunded;
 
-  /** ID of the Connect application that earned the fee. */
   @SerializedName("application")
-  @Getter(lombok.AccessLevel.NONE)
-  @Setter(lombok.AccessLevel.NONE)
-  ExpandableField<Application> application;
+  Application application;
 
   /**
    * Balance transaction that describes the impact of this collected application fee on your account
@@ -121,24 +118,6 @@ public class ApplicationFee extends ApiResource implements BalanceTransactionSou
 
   public void setAccountObject(Account expandableObject) {
     this.account = new ExpandableField<Account>(expandableObject.getId(), expandableObject);
-  }
-
-  /** Get ID of expandable {@code application} object. */
-  public String getApplication() {
-    return (this.application != null) ? this.application.getId() : null;
-  }
-
-  public void setApplication(String id) {
-    this.application = ApiResource.setExpandableFieldId(id, this.application);
-  }
-
-  /** Get expanded {@code application}. */
-  public Application getApplicationObject() {
-    return (this.application != null) ? this.application.getExpanded() : null;
-  }
-
-  public void setApplicationObject(Application expandableObject) {
-    this.application = new ExpandableField<Application>(expandableObject.getId(), expandableObject);
   }
 
   /** Get ID of expandable {@code balanceTransaction} object. */
@@ -279,5 +258,27 @@ public class ApplicationFee extends ApiResource implements BalanceTransactionSou
             String.format("/v1/application_fees/%s", ApiResource.urlEncodeId(id)));
     return ApiResource.request(
         ApiResource.RequestMethod.GET, url, params, ApplicationFee.class, options);
+  }
+
+  @Getter
+  @Setter
+  @EqualsAndHashCode(callSuper = false)
+  public static class Application extends StripeObject implements HasId {
+    /** Unique identifier for the object. */
+    @Getter(onMethod_ = {@Override})
+    @SerializedName("id")
+    String id;
+
+    /** The name of the application. */
+    @SerializedName("name")
+    String name;
+
+    /**
+     * String representing the object's type. Objects of the same type share the same value.
+     *
+     * <p>Equal to {@code application}.
+     */
+    @SerializedName("object")
+    String object;
   }
 }

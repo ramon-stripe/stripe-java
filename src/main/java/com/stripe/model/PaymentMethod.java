@@ -470,7 +470,6 @@ public class PaymentMethod extends ApiResource implements HasId, MetadataStore<P
   @Setter
   @EqualsAndHashCode(callSuper = false)
   public static class BillingDetails extends StripeObject {
-    /** Billing address. */
     @SerializedName("address")
     Address address;
 
@@ -485,6 +484,38 @@ public class PaymentMethod extends ApiResource implements HasId, MetadataStore<P
     /** Billing phone number (including extension). */
     @SerializedName("phone")
     String phone;
+
+    @Getter
+    @Setter
+    @EqualsAndHashCode(callSuper = false)
+    public static class Address extends StripeObject {
+      /** City, district, suburb, town, or village. */
+      @SerializedName("city")
+      String city;
+
+      /**
+       * Two-letter country code (<a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2">ISO
+       * 3166-1 alpha-2</a>).
+       */
+      @SerializedName("country")
+      String country;
+
+      /** Address line 1 (e.g., street, PO Box, or company name). */
+      @SerializedName("line1")
+      String line1;
+
+      /** Address line 2 (e.g., apartment, suite, unit, or building). */
+      @SerializedName("line2")
+      String line2;
+
+      /** ZIP or postal code. */
+      @SerializedName("postal_code")
+      String postalCode;
+
+      /** State, county, province, or region. */
+      @SerializedName("state")
+      String state;
+    }
   }
 
   @Getter
@@ -498,7 +529,6 @@ public class PaymentMethod extends ApiResource implements HasId, MetadataStore<P
     @SerializedName("brand")
     String brand;
 
-    /** Checks on Card address and CVC if provided. */
     @SerializedName("checks")
     Checks checks;
 
@@ -557,15 +587,12 @@ public class PaymentMethod extends ApiResource implements HasId, MetadataStore<P
     @SerializedName("last4")
     String last4;
 
-    /** Contains information about card networks that can be used to process the payment. */
     @SerializedName("networks")
     Networks networks;
 
-    /** Contains details on how this Card maybe be used for 3D Secure authentication. */
     @SerializedName("three_d_secure_usage")
     ThreeDSecureUsage threeDSecureUsage;
 
-    /** If this Card is part of a card wallet, this contains the details of the card wallet. */
     @SerializedName("wallet")
     Wallet wallet;
 
@@ -671,10 +698,6 @@ public class PaymentMethod extends ApiResource implements HasId, MetadataStore<P
       @Setter
       @EqualsAndHashCode(callSuper = false)
       public static class Masterpass extends StripeObject {
-        /**
-         * Owner's verified billing address. Values are verified or provided by the wallet directly
-         * (if supported) at the time of authorization or settlement. They cannot be set or mutated.
-         */
         @SerializedName("billing_address")
         Address billingAddress;
 
@@ -692,12 +715,40 @@ public class PaymentMethod extends ApiResource implements HasId, MetadataStore<P
         @SerializedName("name")
         String name;
 
-        /**
-         * Owner's verified shipping address. Values are verified or provided by the wallet directly
-         * (if supported) at the time of authorization or settlement. They cannot be set or mutated.
-         */
         @SerializedName("shipping_address")
         Address shippingAddress;
+
+        @Getter
+        @Setter
+        @EqualsAndHashCode(callSuper = false)
+        public static class Address extends StripeObject {
+          /** City, district, suburb, town, or village. */
+          @SerializedName("city")
+          String city;
+
+          /**
+           * Two-letter country code (<a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2">ISO
+           * 3166-1 alpha-2</a>).
+           */
+          @SerializedName("country")
+          String country;
+
+          /** Address line 1 (e.g., street, PO Box, or company name). */
+          @SerializedName("line1")
+          String line1;
+
+          /** Address line 2 (e.g., apartment, suite, unit, or building). */
+          @SerializedName("line2")
+          String line2;
+
+          /** ZIP or postal code. */
+          @SerializedName("postal_code")
+          String postalCode;
+
+          /** State, county, province, or region. */
+          @SerializedName("state")
+          String state;
+        }
       }
 
       @Getter
@@ -709,10 +760,6 @@ public class PaymentMethod extends ApiResource implements HasId, MetadataStore<P
       @Setter
       @EqualsAndHashCode(callSuper = false)
       public static class VisaCheckout extends StripeObject {
-        /**
-         * Owner's verified billing address. Values are verified or provided by the wallet directly
-         * (if supported) at the time of authorization or settlement. They cannot be set or mutated.
-         */
         @SerializedName("billing_address")
         Address billingAddress;
 
@@ -730,12 +777,40 @@ public class PaymentMethod extends ApiResource implements HasId, MetadataStore<P
         @SerializedName("name")
         String name;
 
-        /**
-         * Owner's verified shipping address. Values are verified or provided by the wallet directly
-         * (if supported) at the time of authorization or settlement. They cannot be set or mutated.
-         */
         @SerializedName("shipping_address")
         Address shippingAddress;
+
+        @Getter
+        @Setter
+        @EqualsAndHashCode(callSuper = false)
+        public static class Address extends StripeObject {
+          /** City, district, suburb, town, or village. */
+          @SerializedName("city")
+          String city;
+
+          /**
+           * Two-letter country code (<a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2">ISO
+           * 3166-1 alpha-2</a>).
+           */
+          @SerializedName("country")
+          String country;
+
+          /** Address line 1 (e.g., street, PO Box, or company name). */
+          @SerializedName("line1")
+          String line1;
+
+          /** Address line 2 (e.g., apartment, suite, unit, or building). */
+          @SerializedName("line2")
+          String line2;
+
+          /** ZIP or postal code. */
+          @SerializedName("postal_code")
+          String postalCode;
+
+          /** State, county, province, or region. */
+          @SerializedName("state")
+          String state;
+        }
       }
     }
   }

@@ -3,7 +3,6 @@ package com.stripe.model;
 import com.google.gson.annotations.SerializedName;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
-import com.stripe.model.radar.Rule;
 import com.stripe.net.ApiResource;
 import com.stripe.net.RequestOptions;
 import com.stripe.param.ChargeCaptureParams;
@@ -11,7 +10,6 @@ import com.stripe.param.ChargeCreateParams;
 import com.stripe.param.ChargeListParams;
 import com.stripe.param.ChargeRetrieveParams;
 import com.stripe.param.ChargeUpdateParams;
-import java.util.List;
 import java.util.Map;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -43,11 +41,8 @@ public class Charge extends ApiResource implements MetadataStore<Charge>, Balanc
   @SerializedName("amount_refunded")
   Long amountRefunded;
 
-  /** ID of the Connect application that created the charge. */
   @SerializedName("application")
-  @Getter(lombok.AccessLevel.NONE)
-  @Setter(lombok.AccessLevel.NONE)
-  ExpandableField<Application> application;
+  Application application;
 
   /**
    * The application fee (if any) for the charge. <a
@@ -81,7 +76,7 @@ public class Charge extends ApiResource implements MetadataStore<Charge>, Balanc
   ExpandableField<BalanceTransaction> balanceTransaction;
 
   @SerializedName("billing_details")
-  PaymentMethod.BillingDetails billingDetails;
+  BillingDetails billingDetails;
 
   /**
    * The full statement descriptor that is passed to card networks, and that is displayed on your
@@ -149,7 +144,6 @@ public class Charge extends ApiResource implements MetadataStore<Charge>, Balanc
   @SerializedName("failure_message")
   String failureMessage;
 
-  /** Information on fraud assessments for the charge. */
   @SerializedName("fraud_details")
   FraudDetails fraudDetails;
 
@@ -207,10 +201,6 @@ public class Charge extends ApiResource implements MetadataStore<Charge>, Balanc
   @Setter(lombok.AccessLevel.NONE)
   ExpandableField<Order> order;
 
-  /**
-   * Details about whether the payment was accepted, and why. See <a
-   * href="https://stripe.com/docs/declines">understanding declines</a> for details.
-   */
   @SerializedName("outcome")
   Outcome outcome;
 
@@ -228,7 +218,6 @@ public class Charge extends ApiResource implements MetadataStore<Charge>, Balanc
   @SerializedName("payment_method")
   String paymentMethod;
 
-  /** Details about the payment method at the time of the transaction. */
   @SerializedName("payment_method_details")
   PaymentMethodDetails paymentMethodDetails;
 
@@ -268,7 +257,6 @@ public class Charge extends ApiResource implements MetadataStore<Charge>, Balanc
   @Setter(lombok.AccessLevel.NONE)
   ExpandableField<Review> review;
 
-  /** Shipping information for the charge. */
   @SerializedName("shipping")
   ShippingDetails shipping;
 
@@ -319,11 +307,6 @@ public class Charge extends ApiResource implements MetadataStore<Charge>, Balanc
   @Setter(lombok.AccessLevel.NONE)
   ExpandableField<Transfer> transfer;
 
-  /**
-   * An optional dictionary including the account to automatically transfer to as part of a
-   * destination charge. <a href="https://stripe.com/docs/connect/destination-charges">See the
-   * Connect documentation</a> for details.
-   */
   @SerializedName("transfer_data")
   TransferData transferData;
 
@@ -334,24 +317,6 @@ public class Charge extends ApiResource implements MetadataStore<Charge>, Balanc
    */
   @SerializedName("transfer_group")
   String transferGroup;
-
-  /** Get ID of expandable {@code application} object. */
-  public String getApplication() {
-    return (this.application != null) ? this.application.getId() : null;
-  }
-
-  public void setApplication(String id) {
-    this.application = ApiResource.setExpandableFieldId(id, this.application);
-  }
-
-  /** Get expanded {@code application}. */
-  public Application getApplicationObject() {
-    return (this.application != null) ? this.application.getExpanded() : null;
-  }
-
-  public void setApplicationObject(Application expandableObject) {
-    this.application = new ExpandableField<Application>(expandableObject.getId(), expandableObject);
-  }
 
   /** Get ID of expandable {@code applicationFee} object. */
   public String getApplicationFee() {
@@ -846,6 +811,80 @@ public class Charge extends ApiResource implements MetadataStore<Charge>, Balanc
   @Getter
   @Setter
   @EqualsAndHashCode(callSuper = false)
+  public static class Application extends StripeObject implements HasId {
+    /** Unique identifier for the object. */
+    @Getter(onMethod_ = {@Override})
+    @SerializedName("id")
+    String id;
+
+    /** The name of the application. */
+    @SerializedName("name")
+    String name;
+
+    /**
+     * String representing the object's type. Objects of the same type share the same value.
+     *
+     * <p>Equal to {@code application}.
+     */
+    @SerializedName("object")
+    String object;
+  }
+
+  @Getter
+  @Setter
+  @EqualsAndHashCode(callSuper = false)
+  public static class BillingDetails extends StripeObject {
+    @SerializedName("address")
+    Address address;
+
+    /** Email address. */
+    @SerializedName("email")
+    String email;
+
+    /** Full name. */
+    @SerializedName("name")
+    String name;
+
+    /** Billing phone number (including extension). */
+    @SerializedName("phone")
+    String phone;
+
+    @Getter
+    @Setter
+    @EqualsAndHashCode(callSuper = false)
+    public static class Address extends StripeObject {
+      /** City, district, suburb, town, or village. */
+      @SerializedName("city")
+      String city;
+
+      /**
+       * Two-letter country code (<a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2">ISO
+       * 3166-1 alpha-2</a>).
+       */
+      @SerializedName("country")
+      String country;
+
+      /** Address line 1 (e.g., street, PO Box, or company name). */
+      @SerializedName("line1")
+      String line1;
+
+      /** Address line 2 (e.g., apartment, suite, unit, or building). */
+      @SerializedName("line2")
+      String line2;
+
+      /** ZIP or postal code. */
+      @SerializedName("postal_code")
+      String postalCode;
+
+      /** State, county, province, or region. */
+      @SerializedName("state")
+      String state;
+    }
+  }
+
+  @Getter
+  @Setter
+  @EqualsAndHashCode(callSuper = false)
   public static class FraudDetails extends StripeObject {
     /** Assessments from Stripe. If set, the value is {@code fraudulent}. */
     @SerializedName("stripe_report")
@@ -867,7 +906,7 @@ public class Charge extends ApiResource implements MetadataStore<Charge>, Balanc
     String customerReference;
 
     @SerializedName("line_items")
-    List<Charge.Level3.LineItem> lineItems;
+    LineItem lineItems;
 
     @SerializedName("merchant_reference")
     String merchantReference;
@@ -949,11 +988,8 @@ public class Charge extends ApiResource implements MetadataStore<Charge>, Balanc
     @SerializedName("risk_score")
     Long riskScore;
 
-    /** The ID of the Radar rule that matched the payment, if applicable. */
     @SerializedName("rule")
-    @Getter(lombok.AccessLevel.NONE)
-    @Setter(lombok.AccessLevel.NONE)
-    ExpandableField<Rule> rule;
+    Rule rule;
 
     /**
      * A human-readable description of the outcome type and reason, designed for you (the recipient
@@ -971,22 +1007,26 @@ public class Charge extends ApiResource implements MetadataStore<Charge>, Balanc
     @SerializedName("type")
     String type;
 
-    /** Get ID of expandable {@code rule} object. */
-    public String getRule() {
-      return (this.rule != null) ? this.rule.getId() : null;
-    }
+    @Getter
+    @Setter
+    @EqualsAndHashCode(callSuper = false)
+    public static class Rule extends StripeObject implements HasId {
+      /** The action taken on the payment. */
+      @SerializedName("action")
+      String action;
 
-    public void setRule(String id) {
-      this.rule = ApiResource.setExpandableFieldId(id, this.rule);
-    }
+      /** Always true for a deleted object. */
+      @SerializedName("deleted")
+      Boolean deleted;
 
-    /** Get expanded {@code rule}. */
-    public Rule getRuleObject() {
-      return (this.rule != null) ? this.rule.getExpanded() : null;
-    }
+      /** Unique identifier for the object. */
+      @Getter(onMethod_ = {@Override})
+      @SerializedName("id")
+      String id;
 
-    public void setRuleObject(Rule expandableObject) {
-      this.rule = new ExpandableField<Rule>(expandableObject.getId(), expandableObject);
+      /** The predicate to evaluate the payment against. */
+      @SerializedName("predicate")
+      String predicate;
     }
   }
 
@@ -1298,7 +1338,6 @@ public class Charge extends ApiResource implements MetadataStore<Charge>, Balanc
       @SerializedName("brand")
       String brand;
 
-      /** Check results by Card networks on Card address and CVC at time of payment. */
       @SerializedName("checks")
       Checks checks;
 
@@ -1347,12 +1386,6 @@ public class Charge extends ApiResource implements MetadataStore<Charge>, Balanc
       @SerializedName("iin")
       String iin;
 
-      /**
-       * Installment details for this payment (Mexico only).
-       *
-       * <p>For more information, see the <a
-       * href="https://stripe.com/docs/payments/installments">installments integration guide</a>.
-       */
       @SerializedName("installments")
       Installments installments;
 
@@ -1379,11 +1412,9 @@ public class Charge extends ApiResource implements MetadataStore<Charge>, Balanc
       @SerializedName("network")
       String network;
 
-      /** Populated if this transaction used 3D Secure authentication. */
       @SerializedName("three_d_secure")
       ThreeDSecure threeDSecure;
 
-      /** If this Card is part of a card wallet, this contains the details of the card wallet. */
       @SerializedName("wallet")
       Wallet wallet;
 
@@ -1417,9 +1448,31 @@ public class Charge extends ApiResource implements MetadataStore<Charge>, Balanc
       @Setter
       @EqualsAndHashCode(callSuper = false)
       public static class Installments extends StripeObject {
-        /** Installment plan selected for the payment. */
         @SerializedName("plan")
-        PaymentIntent.PaymentMethodOptions.Card.Installments.Plan plan;
+        Plan plan;
+
+        @Getter
+        @Setter
+        @EqualsAndHashCode(callSuper = false)
+        public static class Plan extends StripeObject {
+          /**
+           * For {@code fixed_count} installment plans, this is the number of installment payments
+           * your customer will make to their credit card.
+           */
+          @SerializedName("count")
+          Long count;
+
+          /**
+           * For {@code fixed_count} installment plans, this is the interval between installment
+           * payments your customer will make to their credit card. One of {@code month}.
+           */
+          @SerializedName("interval")
+          String interval;
+
+          /** Type of installment plan, one of {@code fixed_count}. */
+          @SerializedName("type")
+          String type;
+        }
       }
 
       @Getter
@@ -1528,11 +1581,6 @@ public class Charge extends ApiResource implements MetadataStore<Charge>, Balanc
         @Setter
         @EqualsAndHashCode(callSuper = false)
         public static class Masterpass extends StripeObject {
-          /**
-           * Owner's verified billing address. Values are verified or provided by the wallet
-           * directly (if supported) at the time of authorization or settlement. They cannot be set
-           * or mutated.
-           */
           @SerializedName("billing_address")
           Address billingAddress;
 
@@ -1550,13 +1598,40 @@ public class Charge extends ApiResource implements MetadataStore<Charge>, Balanc
           @SerializedName("name")
           String name;
 
-          /**
-           * Owner's verified shipping address. Values are verified or provided by the wallet
-           * directly (if supported) at the time of authorization or settlement. They cannot be set
-           * or mutated.
-           */
           @SerializedName("shipping_address")
           Address shippingAddress;
+
+          @Getter
+          @Setter
+          @EqualsAndHashCode(callSuper = false)
+          public static class Address extends StripeObject {
+            /** City, district, suburb, town, or village. */
+            @SerializedName("city")
+            String city;
+
+            /**
+             * Two-letter country code (<a
+             * href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2">ISO 3166-1 alpha-2</a>).
+             */
+            @SerializedName("country")
+            String country;
+
+            /** Address line 1 (e.g., street, PO Box, or company name). */
+            @SerializedName("line1")
+            String line1;
+
+            /** Address line 2 (e.g., apartment, suite, unit, or building). */
+            @SerializedName("line2")
+            String line2;
+
+            /** ZIP or postal code. */
+            @SerializedName("postal_code")
+            String postalCode;
+
+            /** State, county, province, or region. */
+            @SerializedName("state")
+            String state;
+          }
         }
 
         @Getter
@@ -1568,11 +1643,6 @@ public class Charge extends ApiResource implements MetadataStore<Charge>, Balanc
         @Setter
         @EqualsAndHashCode(callSuper = false)
         public static class VisaCheckout extends StripeObject {
-          /**
-           * Owner's verified billing address. Values are verified or provided by the wallet
-           * directly (if supported) at the time of authorization or settlement. They cannot be set
-           * or mutated.
-           */
           @SerializedName("billing_address")
           Address billingAddress;
 
@@ -1590,13 +1660,40 @@ public class Charge extends ApiResource implements MetadataStore<Charge>, Balanc
           @SerializedName("name")
           String name;
 
-          /**
-           * Owner's verified shipping address. Values are verified or provided by the wallet
-           * directly (if supported) at the time of authorization or settlement. They cannot be set
-           * or mutated.
-           */
           @SerializedName("shipping_address")
           Address shippingAddress;
+
+          @Getter
+          @Setter
+          @EqualsAndHashCode(callSuper = false)
+          public static class Address extends StripeObject {
+            /** City, district, suburb, town, or village. */
+            @SerializedName("city")
+            String city;
+
+            /**
+             * Two-letter country code (<a
+             * href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2">ISO 3166-1 alpha-2</a>).
+             */
+            @SerializedName("country")
+            String country;
+
+            /** Address line 1 (e.g., street, PO Box, or company name). */
+            @SerializedName("line1")
+            String line1;
+
+            /** Address line 2 (e.g., apartment, suite, unit, or building). */
+            @SerializedName("line2")
+            String line2;
+
+            /** ZIP or postal code. */
+            @SerializedName("postal_code")
+            String postalCode;
+
+            /** State, county, province, or region. */
+            @SerializedName("state")
+            String state;
+          }
         }
       }
     }
@@ -1682,10 +1779,6 @@ public class Charge extends ApiResource implements MetadataStore<Charge>, Balanc
       @SerializedName("read_method")
       String readMethod;
 
-      /**
-       * A collection of fields required to be displayed on receipts. Only required for EMV
-       * transactions.
-       */
       @SerializedName("receipt")
       Receipt receipt;
 
@@ -1910,10 +2003,6 @@ public class Charge extends ApiResource implements MetadataStore<Charge>, Balanc
       @SerializedName("read_method")
       String readMethod;
 
-      /**
-       * A collection of fields required to be displayed on receipts. Only required for EMV
-       * transactions.
-       */
       @SerializedName("receipt")
       Receipt receipt;
 
@@ -2090,6 +2179,65 @@ public class Charge extends ApiResource implements MetadataStore<Charge>, Balanc
     @Setter
     @EqualsAndHashCode(callSuper = false)
     public static class Wechat extends StripeObject {}
+  }
+
+  @Getter
+  @Setter
+  @EqualsAndHashCode(callSuper = false)
+  public static class ShippingDetails extends StripeObject {
+    @SerializedName("address")
+    Address address;
+
+    /** The delivery service that shipped a physical product, such as Fedex, UPS, USPS, etc. */
+    @SerializedName("carrier")
+    String carrier;
+
+    /** Recipient name. */
+    @SerializedName("name")
+    String name;
+
+    /** Recipient phone (including extension). */
+    @SerializedName("phone")
+    String phone;
+
+    /**
+     * The tracking number for a physical product, obtained from the delivery service. If multiple
+     * tracking numbers were generated for this purchase, please separate them with commas.
+     */
+    @SerializedName("tracking_number")
+    String trackingNumber;
+
+    @Getter
+    @Setter
+    @EqualsAndHashCode(callSuper = false)
+    public static class Address extends StripeObject {
+      /** City, district, suburb, town, or village. */
+      @SerializedName("city")
+      String city;
+
+      /**
+       * Two-letter country code (<a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2">ISO
+       * 3166-1 alpha-2</a>).
+       */
+      @SerializedName("country")
+      String country;
+
+      /** Address line 1 (e.g., street, PO Box, or company name). */
+      @SerializedName("line1")
+      String line1;
+
+      /** Address line 2 (e.g., apartment, suite, unit, or building). */
+      @SerializedName("line2")
+      String line2;
+
+      /** ZIP or postal code. */
+      @SerializedName("postal_code")
+      String postalCode;
+
+      /** State, county, province, or region. */
+      @SerializedName("state")
+      String state;
+    }
   }
 
   @Getter

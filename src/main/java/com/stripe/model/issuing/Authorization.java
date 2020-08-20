@@ -33,10 +33,6 @@ public class Authorization extends ApiResource
   @SerializedName("amount")
   Long amount;
 
-  /**
-   * Detailed breakdown of amount components. These amounts are denominated in {@code currency} and
-   * in the <a href="https://stripe.com/docs/currencies#zero-decimal">smallest currency unit</a>.
-   */
   @SerializedName("amount_details")
   AmountDetails amountDetails;
 
@@ -129,23 +125,11 @@ public class Authorization extends ApiResource
   @SerializedName("object")
   String object;
 
-  /**
-   * The pending authorization request. This field will only be non-null during an {@code
-   * issuing_authorization.request} webhook.
-   */
   @SerializedName("pending_request")
   PendingRequest pendingRequest;
 
-  /**
-   * History of every time the authorization was approved/denied (whether approved/denied by you
-   * directly or by Stripe based on your {@code spending_controls}). If the merchant changes the
-   * authorization by performing an <a
-   * href="https://stripe.com/docs/issuing/purchases/authorizations">incremental authorization or
-   * partial capture</a>, you can look at this field to see the previous states of the
-   * authorization.
-   */
   @SerializedName("request_history")
-  List<Authorization.RequestHistory> requestHistory;
+  RequestHistory requestHistory;
 
   /**
    * The current status of the authorization in its lifecycle.
@@ -523,11 +507,6 @@ public class Authorization extends ApiResource
     @SerializedName("amount")
     Long amount;
 
-    /**
-     * Detailed breakdown of amount components. These amounts are denominated in {@code currency}
-     * and in the <a href="https://stripe.com/docs/currencies#zero-decimal">smallest currency
-     * unit</a>.
-     */
     @SerializedName("amount_details")
     AmountDetails amountDetails;
 
@@ -558,6 +537,15 @@ public class Authorization extends ApiResource
     /** The local currency the merchant is requesting to authorize. */
     @SerializedName("merchant_currency")
     String merchantCurrency;
+
+    @Getter
+    @Setter
+    @EqualsAndHashCode(callSuper = false)
+    public static class AmountDetails extends StripeObject {
+      /** The fee charged by the ATM for the cash withdrawal. */
+      @SerializedName("atm_fee")
+      Long atmFee;
+    }
   }
 
   @Getter
@@ -572,11 +560,6 @@ public class Authorization extends ApiResource
     @SerializedName("amount")
     Long amount;
 
-    /**
-     * Detailed breakdown of amount components. These amounts are denominated in {@code currency}
-     * and in the <a href="https://stripe.com/docs/currencies#zero-decimal">smallest currency
-     * unit</a>.
-     */
     @SerializedName("amount_details")
     AmountDetails amountDetails;
 
@@ -624,6 +607,15 @@ public class Authorization extends ApiResource
      */
     @SerializedName("reason")
     String reason;
+
+    @Getter
+    @Setter
+    @EqualsAndHashCode(callSuper = false)
+    public static class AmountDetails extends StripeObject {
+      /** The fee charged by the ATM for the cash withdrawal. */
+      @SerializedName("atm_fee")
+      Long atmFee;
+    }
   }
 
   @Getter

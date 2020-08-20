@@ -3,18 +3,19 @@ package com.stripe.model.checkout;
 import com.google.gson.annotations.SerializedName;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
+import com.stripe.model.Coupon;
 import com.stripe.model.Customer;
 import com.stripe.model.ExpandableField;
 import com.stripe.model.HasId;
-import com.stripe.model.LineItem;
 import com.stripe.model.LineItemCollection;
 import com.stripe.model.PaymentIntent;
 import com.stripe.model.Plan;
+import com.stripe.model.PromotionCode;
 import com.stripe.model.SetupIntent;
-import com.stripe.model.ShippingDetails;
 import com.stripe.model.Sku;
 import com.stripe.model.StripeObject;
 import com.stripe.model.Subscription;
+import com.stripe.model.TaxRate;
 import com.stripe.net.ApiResource;
 import com.stripe.net.RequestOptions;
 import com.stripe.param.checkout.SessionCreateParams;
@@ -91,9 +92,8 @@ public class Session extends ApiResource implements HasId {
   @SerializedName("customer_email")
   String customerEmail;
 
-  /** The line items, plans, or SKUs purchased by the customer. Prefer using {@code line_items}. */
   @SerializedName("display_items")
-  List<Session.DisplayItem> displayItems;
+  DisplayItem displayItems;
 
   /** Unique identifier for the object. Used to pass to {@code redirectToCheckout} in Stripe.js. */
   @Getter(onMethod_ = {@Override})
@@ -165,13 +165,9 @@ public class Session extends ApiResource implements HasId {
   @Setter(lombok.AccessLevel.NONE)
   ExpandableField<SetupIntent> setupIntent;
 
-  /** Shipping information for this Checkout Session. */
   @SerializedName("shipping")
   ShippingDetails shipping;
 
-  /**
-   * When set, provides configuration for Checkout to collect a shipping address from a customer.
-   */
   @SerializedName("shipping_address_collection")
   ShippingAddressCollection shippingAddressCollection;
 
@@ -199,7 +195,6 @@ public class Session extends ApiResource implements HasId {
   @SerializedName("success_url")
   String successUrl;
 
-  /** Tax and discount details for the computed total amount. */
   @SerializedName("total_details")
   TotalDetails totalDetails;
 
@@ -492,6 +487,65 @@ public class Session extends ApiResource implements HasId {
   @Getter
   @Setter
   @EqualsAndHashCode(callSuper = false)
+  public static class ShippingDetails extends StripeObject {
+    @SerializedName("address")
+    Address address;
+
+    /** The delivery service that shipped a physical product, such as Fedex, UPS, USPS, etc. */
+    @SerializedName("carrier")
+    String carrier;
+
+    /** Recipient name. */
+    @SerializedName("name")
+    String name;
+
+    /** Recipient phone (including extension). */
+    @SerializedName("phone")
+    String phone;
+
+    /**
+     * The tracking number for a physical product, obtained from the delivery service. If multiple
+     * tracking numbers were generated for this purchase, please separate them with commas.
+     */
+    @SerializedName("tracking_number")
+    String trackingNumber;
+
+    @Getter
+    @Setter
+    @EqualsAndHashCode(callSuper = false)
+    public static class Address extends StripeObject {
+      /** City, district, suburb, town, or village. */
+      @SerializedName("city")
+      String city;
+
+      /**
+       * Two-letter country code (<a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2">ISO
+       * 3166-1 alpha-2</a>).
+       */
+      @SerializedName("country")
+      String country;
+
+      /** Address line 1 (e.g., street, PO Box, or company name). */
+      @SerializedName("line1")
+      String line1;
+
+      /** Address line 2 (e.g., apartment, suite, unit, or building). */
+      @SerializedName("line2")
+      String line2;
+
+      /** ZIP or postal code. */
+      @SerializedName("postal_code")
+      String postalCode;
+
+      /** State, county, province, or region. */
+      @SerializedName("state")
+      String state;
+    }
+  }
+
+  @Getter
+  @Setter
+  @EqualsAndHashCode(callSuper = false)
   public static class TotalDetails extends StripeObject {
     /** This is the sum of all the line item discounts. */
     @SerializedName("amount_discount")
@@ -508,13 +562,173 @@ public class Session extends ApiResource implements HasId {
     @Setter
     @EqualsAndHashCode(callSuper = false)
     public static class Breakdown extends StripeObject {
-      /** The aggregated line item discounts. */
       @SerializedName("discounts")
-      List<LineItem.Discount> discounts;
+      DiscountAmount discounts;
 
-      /** The aggregated line item tax amounts by rate. */
       @SerializedName("taxes")
-      List<LineItem.Tax> taxes;
+      Tax taxes;
+
+      @Getter
+      @Setter
+      @EqualsAndHashCode(callSuper = false)
+      public static class DiscountAmount extends StripeObject {
+        /** The amount discounted. */
+        @SerializedName("amount")
+        Long amount;
+
+        /**
+         * A discount represents the actual application of a coupon to a particular customer. It
+         * contains information about when the discount began and when it will end.
+         *
+         * <p>Related guide: <a
+         * href="https://stripe.com/docs/billing/subscriptions/discounts">Applying Discounts to
+         * Subscriptions</a>.
+         */
+        @SerializedName("discount")
+        Discount discount;
+
+        @Getter
+        @Setter
+        @EqualsAndHashCode(callSuper = false)
+        public static class Discount extends StripeObject implements HasId {
+          /**
+           * A coupon contains information about a percent-off or amount-off discount you might want
+           * to apply to a customer. Coupons may be applied to <a
+           * href="https://stripe.com/docs/api#invoices">invoices</a> or <a
+           * href="https://stripe.com/docs/api#create_order-coupon">orders</a>. Coupons do not work
+           * with conventional one-off <a
+           * href="https://stripe.com/docs/api#create_charge">charges</a>.
+           */
+          @SerializedName("coupon")
+          Coupon coupon;
+
+          /** The ID of the customer associated with this discount. */
+          @SerializedName("customer")
+          @Getter(lombok.AccessLevel.NONE)
+          @Setter(lombok.AccessLevel.NONE)
+          ExpandableField<Customer> customer;
+
+          /** Always true for a deleted object. */
+          @SerializedName("deleted")
+          Boolean deleted;
+
+          /**
+           * If the coupon has a duration of {@code repeating}, the date that this discount will
+           * end. If the coupon has a duration of {@code once} or {@code forever}, this attribute
+           * will be null.
+           */
+          @SerializedName("end")
+          Long end;
+
+          /**
+           * The ID of the discount object. Discounts cannot be fetched by ID. Use {@code
+           * expand[]=discounts} in API calls to expand discount IDs in an array.
+           */
+          @Getter(onMethod_ = {@Override})
+          @SerializedName("id")
+          String id;
+
+          /**
+           * The invoice that the discount's coupon was applied to, if it was applied directly to a
+           * particular invoice.
+           */
+          @SerializedName("invoice")
+          String invoice;
+
+          /**
+           * The invoice item {@code id} (or invoice line item {@code id} for invoice line items of
+           * type='subscription') that the discount's coupon was applied to, if it was applied
+           * directly to a particular invoice item or invoice line item.
+           */
+          @SerializedName("invoice_item")
+          String invoiceItem;
+
+          /**
+           * String representing the object's type. Objects of the same type share the same value.
+           *
+           * <p>Equal to {@code discount}.
+           */
+          @SerializedName("object")
+          String object;
+
+          /** The promotion code applied to create this discount. */
+          @SerializedName("promotion_code")
+          @Getter(lombok.AccessLevel.NONE)
+          @Setter(lombok.AccessLevel.NONE)
+          ExpandableField<PromotionCode> promotionCode;
+
+          /** Date that the coupon was applied. */
+          @SerializedName("start")
+          Long start;
+
+          /**
+           * The subscription that this coupon is applied to, if it is applied to a particular
+           * subscription.
+           */
+          @SerializedName("subscription")
+          String subscription;
+
+          /** Get ID of expandable {@code customer} object. */
+          public String getCustomer() {
+            return (this.customer != null) ? this.customer.getId() : null;
+          }
+
+          public void setCustomer(String id) {
+            this.customer = ApiResource.setExpandableFieldId(id, this.customer);
+          }
+
+          /** Get expanded {@code customer}. */
+          public Customer getCustomerObject() {
+            return (this.customer != null) ? this.customer.getExpanded() : null;
+          }
+
+          public void setCustomerObject(Customer expandableObject) {
+            this.customer =
+                new ExpandableField<Customer>(expandableObject.getId(), expandableObject);
+          }
+
+          /** Get ID of expandable {@code promotionCode} object. */
+          public String getPromotionCode() {
+            return (this.promotionCode != null) ? this.promotionCode.getId() : null;
+          }
+
+          public void setPromotionCode(String id) {
+            this.promotionCode = ApiResource.setExpandableFieldId(id, this.promotionCode);
+          }
+
+          /** Get expanded {@code promotionCode}. */
+          public PromotionCode getPromotionCodeObject() {
+            return (this.promotionCode != null) ? this.promotionCode.getExpanded() : null;
+          }
+
+          public void setPromotionCodeObject(PromotionCode expandableObject) {
+            this.promotionCode =
+                new ExpandableField<PromotionCode>(expandableObject.getId(), expandableObject);
+          }
+        }
+      }
+
+      @Getter
+      @Setter
+      @EqualsAndHashCode(callSuper = false)
+      public static class Tax extends StripeObject {
+        /** Amount of tax applied for this rate. */
+        @SerializedName("amount")
+        Long amount;
+
+        /**
+         * Tax rates can be applied to <a
+         * href="https://stripe.com/docs/billing/invoices/tax-rates">invoices</a>, <a
+         * href="https://stripe.com/docs/billing/subscriptions/taxes">subscriptions</a> and <a
+         * href="https://stripe.com/docs/payments/checkout/set-up-a-subscription#tax-rates">Checkout
+         * Sessions</a> to collect tax.
+         *
+         * <p>Related guide: <a href="https://stripe.com/docs/billing/taxes/tax-rates">Tax
+         * Rates</a>.
+         */
+        @SerializedName("rate")
+        TaxRate rate;
+      }
     }
   }
 }

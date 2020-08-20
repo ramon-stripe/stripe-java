@@ -3,7 +3,6 @@ package com.stripe.model.issuing;
 import com.google.gson.annotations.SerializedName;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
-import com.stripe.model.Address;
 import com.stripe.model.ExpandableField;
 import com.stripe.model.File;
 import com.stripe.model.HasId;
@@ -28,7 +27,6 @@ public class Cardholder extends ApiResource implements HasId, MetadataStore<Card
   @SerializedName("billing")
   Billing billing;
 
-  /** Additional information about a {@code company} cardholder. */
   @SerializedName("company")
   Company company;
 
@@ -45,7 +43,6 @@ public class Cardholder extends ApiResource implements HasId, MetadataStore<Card
   @SerializedName("id")
   String id;
 
-  /** Additional information about an {@code individual} cardholder. */
   @SerializedName("individual")
   Individual individual;
 
@@ -84,11 +81,6 @@ public class Cardholder extends ApiResource implements HasId, MetadataStore<Card
   @SerializedName("requirements")
   Requirements requirements;
 
-  /**
-   * Rules that control spending across this cardholder's cards. Refer to our <a
-   * href="https://stripe.com/docs/issuing/controls/spending-controls">documentation</a> for more
-   * details.
-   */
   @SerializedName("spending_controls")
   SpendingControls spendingControls;
 
@@ -257,6 +249,38 @@ public class Cardholder extends ApiResource implements HasId, MetadataStore<Card
   public static class Billing extends StripeObject {
     @SerializedName("address")
     Address address;
+
+    @Getter
+    @Setter
+    @EqualsAndHashCode(callSuper = false)
+    public static class Address extends StripeObject {
+      /** City, district, suburb, town, or village. */
+      @SerializedName("city")
+      String city;
+
+      /**
+       * Two-letter country code (<a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2">ISO
+       * 3166-1 alpha-2</a>).
+       */
+      @SerializedName("country")
+      String country;
+
+      /** Address line 1 (e.g., street, PO Box, or company name). */
+      @SerializedName("line1")
+      String line1;
+
+      /** Address line 2 (e.g., apartment, suite, unit, or building). */
+      @SerializedName("line2")
+      String line2;
+
+      /** ZIP or postal code. */
+      @SerializedName("postal_code")
+      String postalCode;
+
+      /** State, county, province, or region. */
+      @SerializedName("state")
+      String state;
+    }
   }
 
   @Getter
@@ -272,7 +296,6 @@ public class Cardholder extends ApiResource implements HasId, MetadataStore<Card
   @Setter
   @EqualsAndHashCode(callSuper = false)
   public static class Individual extends StripeObject {
-    /** The date of birth of this cardholder. */
     @SerializedName("dob")
     DateOfBirth dob;
 
@@ -284,7 +307,6 @@ public class Cardholder extends ApiResource implements HasId, MetadataStore<Card
     @SerializedName("last_name")
     String lastName;
 
-    /** Government-issued ID document for this cardholder. */
     @SerializedName("verification")
     Verification verification;
 
@@ -309,7 +331,6 @@ public class Cardholder extends ApiResource implements HasId, MetadataStore<Card
     @Setter
     @EqualsAndHashCode(callSuper = false)
     public static class Verification extends StripeObject {
-      /** An identifying document, either a passport or local ID card. */
       @SerializedName("document")
       Document document;
 
@@ -418,9 +439,8 @@ public class Cardholder extends ApiResource implements HasId, MetadataStore<Card
     @SerializedName("blocked_categories")
     List<String> blockedCategories;
 
-    /** Limit spending with amount-based rules that apply across this cardholder's cards. */
     @SerializedName("spending_limits")
-    List<Cardholder.SpendingControls.SpendingLimit> spendingLimits;
+    SpendingLimit spendingLimits;
 
     /** Currency of the amounts within {@code spending_limits}. */
     @SerializedName("spending_limits_currency")

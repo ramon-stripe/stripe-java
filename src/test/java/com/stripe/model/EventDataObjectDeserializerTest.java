@@ -25,7 +25,7 @@ public class EventDataObjectDeserializerTest extends BaseStripeTest {
   private static final String NO_MATCH_VERSION = "2000-08-15";
 
   private void verifyDeserializedStripeObject(StripeObject stripeObject) {
-    final Application application = (Application) stripeObject;
+    final PaymentIntent.Application application = (PaymentIntent.Application) stripeObject;
     assertNotNull(application);
     assertNotNull(application.getId());
     assertNotNull(application.getName());

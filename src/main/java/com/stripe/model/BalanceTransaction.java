@@ -8,7 +8,6 @@ import com.stripe.net.RequestOptions;
 import com.stripe.param.BalanceTransactionListParams;
 import com.stripe.param.BalanceTransactionRetrieveParams;
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Map;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -57,9 +56,8 @@ public class BalanceTransaction extends ApiResource implements HasId {
   @SerializedName("fee")
   Long fee;
 
-  /** Detailed breakdown of fees (in %s) paid for this transaction. */
   @SerializedName("fee_details")
-  List<BalanceTransaction.Fee> feeDetails;
+  Fee feeDetails;
 
   /** Unique identifier for the object. */
   @Getter(onMethod_ = {@Override})

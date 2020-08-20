@@ -3,7 +3,6 @@ package com.stripe.model.issuing;
 import com.google.gson.annotations.SerializedName;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
-import com.stripe.model.Address;
 import com.stripe.model.ExpandableField;
 import com.stripe.model.HasId;
 import com.stripe.model.MetadataStore;
@@ -140,7 +139,6 @@ public class Card extends ApiResource implements HasId, MetadataStore<Card> {
   @SerializedName("replacement_reason")
   String replacementReason;
 
-  /** Where and how the card will be shipped. */
   @SerializedName("shipping")
   Shipping shipping;
 
@@ -393,6 +391,38 @@ public class Card extends ApiResource implements HasId, MetadataStore<Card> {
      */
     @SerializedName("type")
     String type;
+
+    @Getter
+    @Setter
+    @EqualsAndHashCode(callSuper = false)
+    public static class Address extends StripeObject {
+      /** City, district, suburb, town, or village. */
+      @SerializedName("city")
+      String city;
+
+      /**
+       * Two-letter country code (<a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2">ISO
+       * 3166-1 alpha-2</a>).
+       */
+      @SerializedName("country")
+      String country;
+
+      /** Address line 1 (e.g., street, PO Box, or company name). */
+      @SerializedName("line1")
+      String line1;
+
+      /** Address line 2 (e.g., apartment, suite, unit, or building). */
+      @SerializedName("line2")
+      String line2;
+
+      /** ZIP or postal code. */
+      @SerializedName("postal_code")
+      String postalCode;
+
+      /** State, county, province, or region. */
+      @SerializedName("state")
+      String state;
+    }
   }
 
   @Getter
@@ -417,9 +447,8 @@ public class Card extends ApiResource implements HasId, MetadataStore<Card> {
     @SerializedName("blocked_categories")
     List<String> blockedCategories;
 
-    /** Limit spending with amount-based rules. */
     @SerializedName("spending_limits")
-    List<Card.SpendingControls.SpendingLimit> spendingLimits;
+    SpendingLimit spendingLimits;
 
     /**
      * Currency of the amounts within {@code spending_limits}. Always the same as the currency of

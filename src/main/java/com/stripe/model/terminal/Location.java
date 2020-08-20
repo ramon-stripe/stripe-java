@@ -3,9 +3,9 @@ package com.stripe.model.terminal;
 import com.google.gson.annotations.SerializedName;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
-import com.stripe.model.Address;
 import com.stripe.model.HasId;
 import com.stripe.model.MetadataStore;
+import com.stripe.model.StripeObject;
 import com.stripe.net.ApiResource;
 import com.stripe.net.RequestOptions;
 import com.stripe.param.terminal.LocationCreateParams;
@@ -217,5 +217,37 @@ public class Location extends ApiResource implements HasId, MetadataStore<Locati
             String.format("/v1/terminal/locations/%s", ApiResource.urlEncodeId(this.getId())));
     return ApiResource.request(
         ApiResource.RequestMethod.DELETE, url, params, Location.class, options);
+  }
+
+  @Getter
+  @Setter
+  @EqualsAndHashCode(callSuper = false)
+  public static class Address extends StripeObject {
+    /** City, district, suburb, town, or village. */
+    @SerializedName("city")
+    String city;
+
+    /**
+     * Two-letter country code (<a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2">ISO
+     * 3166-1 alpha-2</a>).
+     */
+    @SerializedName("country")
+    String country;
+
+    /** Address line 1 (e.g., street, PO Box, or company name). */
+    @SerializedName("line1")
+    String line1;
+
+    /** Address line 2 (e.g., apartment, suite, unit, or building). */
+    @SerializedName("line2")
+    String line2;
+
+    /** ZIP or postal code. */
+    @SerializedName("postal_code")
+    String postalCode;
+
+    /** State, county, province, or region. */
+    @SerializedName("state")
+    String state;
   }
 }

@@ -11,7 +11,6 @@ import com.stripe.param.OrderPayParams;
 import com.stripe.param.OrderRetrieveParams;
 import com.stripe.param.OrderReturnOrderParams;
 import com.stripe.param.OrderUpdateParams;
-import java.util.List;
 import java.util.Map;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -83,9 +82,14 @@ public class Order extends ApiResource implements HasId, MetadataStore<Order> {
   @SerializedName("id")
   String id;
 
-  /** List of items constituting the order. An order can have up to 25 items. */
+  /**
+   * A representation of the constituent items of any given order. Can be used to represent <a
+   * href="https://stripe.com/docs/api#skus">SKUs</a>, shipping costs, or taxes owed on the order.
+   *
+   * <p>Related guide: <a href="https://stripe.com/docs/orders/guide">Orders</a>.
+   */
   @SerializedName("items")
-  List<OrderItem> items;
+  OrderItem items;
 
   /**
    * Has the value {@code true} if the object exists in live mode or the value {@code false} if the
@@ -124,16 +128,11 @@ public class Order extends ApiResource implements HasId, MetadataStore<Order> {
   @SerializedName("selected_shipping_method")
   String selectedShippingMethod;
 
-  /** The shipping address for the order. Present if the order is for goods to be shipped. */
   @SerializedName("shipping")
   ShippingDetails shipping;
 
-  /**
-   * A list of supported shipping methods for this order. The desired shipping method can be
-   * specified either by updating the order, or when paying it.
-   */
   @SerializedName("shipping_methods")
-  List<Order.ShippingMethod> shippingMethods;
+  ShippingMethod shippingMethods;
 
   /**
    * Current order status. One of {@code created}, {@code paid}, {@code canceled}, {@code
@@ -143,7 +142,6 @@ public class Order extends ApiResource implements HasId, MetadataStore<Order> {
   @SerializedName("status")
   String status;
 
-  /** The timestamps at which the order status was updated. */
   @SerializedName("status_transitions")
   StatusTransitions statusTransitions;
 
@@ -454,7 +452,7 @@ public class Order extends ApiResource implements HasId, MetadataStore<Order> {
   @Getter
   @Setter
   @EqualsAndHashCode(callSuper = false)
-  public static class ShippingMethod extends StripeObject implements HasId {
+  public static class OrderItem extends StripeObject {
     /**
      * A positive integer in the smallest currency unit (that is, 100 cents for $1.00, or 1 for ¥1,
      * Japanese Yen being a zero-decimal currency) representing the total amount for the line item.
@@ -471,9 +469,140 @@ public class Order extends ApiResource implements HasId, MetadataStore<Order> {
     String currency;
 
     /**
-     * The estimated delivery date for the given shipping method. Can be either a specific date or a
-     * range.
+     * Description of the line item, meant to be displayable to the user (e.g., {@code "Express
+     * shipping"}).
      */
+    @SerializedName("description")
+    String description;
+
+    /**
+     * String representing the object's type. Objects of the same type share the same value.
+     *
+     * <p>Equal to {@code order_item}.
+     */
+    @SerializedName("object")
+    String object;
+
+    /**
+     * The ID of the associated object for this line item. Expandable if not null (e.g., expandable
+     * to a SKU).
+     */
+    @SerializedName("parent")
+    @Getter(lombok.AccessLevel.NONE)
+    @Setter(lombok.AccessLevel.NONE)
+    ExpandableField<Sku> parent;
+
+    /**
+     * A positive integer representing the number of instances of {@code parent} that are included
+     * in this order item. Applicable/present only if {@code type} is {@code sku}.
+     */
+    @SerializedName("quantity")
+    Long quantity;
+
+    /**
+     * The type of line item. One of {@code sku}, {@code tax}, {@code shipping}, or {@code
+     * discount}.
+     */
+    @SerializedName("type")
+    String type;
+
+    /** Get ID of expandable {@code parent} object. */
+    public String getParent() {
+      return (this.parent != null) ? this.parent.getId() : null;
+    }
+
+    public void setParent(String id) {
+      this.parent = ApiResource.setExpandableFieldId(id, this.parent);
+    }
+
+    /** Get expanded {@code parent}. */
+    public Sku getParentObject() {
+      return (this.parent != null) ? this.parent.getExpanded() : null;
+    }
+
+    public void setParentObject(Sku expandableObject) {
+      this.parent = new ExpandableField<Sku>(expandableObject.getId(), expandableObject);
+    }
+  }
+
+  @Getter
+  @Setter
+  @EqualsAndHashCode(callSuper = false)
+  public static class ShippingDetails extends StripeObject {
+    @SerializedName("address")
+    Address address;
+
+    /** The delivery service that shipped a physical product, such as Fedex, UPS, USPS, etc. */
+    @SerializedName("carrier")
+    String carrier;
+
+    /** Recipient name. */
+    @SerializedName("name")
+    String name;
+
+    /** Recipient phone (including extension). */
+    @SerializedName("phone")
+    String phone;
+
+    /**
+     * The tracking number for a physical product, obtained from the delivery service. If multiple
+     * tracking numbers were generated for this purchase, please separate them with commas.
+     */
+    @SerializedName("tracking_number")
+    String trackingNumber;
+
+    @Getter
+    @Setter
+    @EqualsAndHashCode(callSuper = false)
+    public static class Address extends StripeObject {
+      /** City, district, suburb, town, or village. */
+      @SerializedName("city")
+      String city;
+
+      /**
+       * Two-letter country code (<a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2">ISO
+       * 3166-1 alpha-2</a>).
+       */
+      @SerializedName("country")
+      String country;
+
+      /** Address line 1 (e.g., street, PO Box, or company name). */
+      @SerializedName("line1")
+      String line1;
+
+      /** Address line 2 (e.g., apartment, suite, unit, or building). */
+      @SerializedName("line2")
+      String line2;
+
+      /** ZIP or postal code. */
+      @SerializedName("postal_code")
+      String postalCode;
+
+      /** State, county, province, or region. */
+      @SerializedName("state")
+      String state;
+    }
+  }
+
+  @Getter
+  @Setter
+  @EqualsAndHashCode(callSuper = false)
+  public static class ShippingMethod extends StripeObject implements HasId {
+    /**
+     * A positive integer in the smallest currency unit (that is, 100 cents for $1.00, or 1 for ¥1,
+     * Japanese Yen being a zero-decimal currency) representing the total amount for the line item.
+     */
+    @SerializedName("amount")
+    Long amount;
+
+    /**
+     * Three-letter <a href="https://www.iso.org/iso-4217-currency-codes.html">ISO currency
+     * code</a>, in lowercase. Must be a <a href="https://stripe.com/docs/currencies">supported
+     * currency</a>.
+     */
+    @SerializedName("currency")
+    String currency;
+
     @SerializedName("delivery_estimate")
     DeliveryEstimate deliveryEstimate;
 

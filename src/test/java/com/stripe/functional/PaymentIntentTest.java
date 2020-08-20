@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import com.stripe.BaseStripeTest;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Account;
-import com.stripe.model.Application;
 import com.stripe.model.Customer;
 import com.stripe.model.PaymentIntent;
 import com.stripe.model.PaymentIntentCollection;
@@ -75,7 +74,7 @@ public class PaymentIntentTest extends BaseStripeTest {
     assertNotNull(resource);
     assertNotNull(resource.getId());
 
-    final Application application = resource.getApplicationObject();
+    final PaymentIntent.Application application = resource.getApplicationObject();
     assertNotNull(application);
     assertNotNull(application.getId());
     assertEquals(resource.getApplication(), application.getId());

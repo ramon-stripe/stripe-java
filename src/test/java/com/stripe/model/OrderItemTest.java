@@ -17,7 +17,7 @@ public class OrderItemTest extends BaseStripeTest {
     final String orderData = getFixture("/v1/orders/or_123");
     final String itemsData = getDataAt(orderData, "items");
     final String itemData = getDataAt(itemsData, 0);
-    final OrderItem orderItem = ApiResource.GSON.fromJson(itemData, OrderItem.class);
+    final Order.OrderItem orderItem = ApiResource.GSON.fromJson(itemData, Order.OrderItem.class);
     assertNotNull(orderItem);
     assertEquals("order_item", orderItem.getObject());
   }
@@ -26,10 +26,10 @@ public class OrderItemTest extends BaseStripeTest {
   public void testDeserializeWithExpansions() throws Exception {
     final String orderItemsData =
         getResourceAsString("/api_fixtures/order_item_parent_expansions.json");
-    Type type = new TypeToken<List<OrderItem>>() {}.getType();
-    final List<OrderItem> orderItemList = ApiResource.GSON.fromJson(orderItemsData, type);
+    Type type = new TypeToken<List<Order.OrderItem>>() {}.getType();
+    final List<Order.OrderItem> orderItemList = ApiResource.GSON.fromJson(orderItemsData, type);
     for (int i = 0; i < orderItemList.size(); i++) {
-      final OrderItem orderItem = orderItemList.get(i);
+      final Order.OrderItem orderItem = orderItemList.get(i);
       assertNotNull(orderItem);
       assertEquals("order_item", orderItem.getObject());
 

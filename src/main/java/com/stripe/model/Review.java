@@ -48,11 +48,6 @@ public class Review extends ApiResource implements HasId {
   @SerializedName("ip_address")
   String ipAddress;
 
-  /**
-   * Information related to the location of the payment. Note that this information is an
-   * approximation and attempts to locate the nearest population center - it should not be used to
-   * determine a specific address.
-   */
   @SerializedName("ip_address_location")
   Location ipAddressLocation;
 
@@ -92,7 +87,6 @@ public class Review extends ApiResource implements HasId {
   @SerializedName("reason")
   String reason;
 
-  /** Information related to the browsing session of the user who initiated the payment. */
   @SerializedName("session")
   Session session;
 

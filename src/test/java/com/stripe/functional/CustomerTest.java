@@ -7,7 +7,6 @@ import com.stripe.BaseStripeTest;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Customer;
 import com.stripe.model.CustomerCollection;
-import com.stripe.model.Discount;
 import com.stripe.net.ApiResource;
 import java.util.HashMap;
 import java.util.Map;
@@ -90,7 +89,7 @@ public class CustomerTest extends BaseStripeTest {
         ApiResource.RequestMethod.DELETE,
         String.format("/v1/customers/%s/discount", customer.getId()),
         null,
-        Discount.class,
+        Customer.Discount.class,
         null);
 
     customer.deleteDiscount();

@@ -14,7 +14,6 @@ import com.stripe.param.issuing.TransactionListParams;
 import com.stripe.param.issuing.TransactionRetrieveParams;
 import com.stripe.param.issuing.TransactionUpdateParams;
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Map;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -33,10 +32,6 @@ public class Transaction extends ApiResource
   @SerializedName("amount")
   Long amount;
 
-  /**
-   * Detailed breakdown of amount components. These amounts are denominated in {@code currency} and
-   * in the <a href="https://stripe.com/docs/currencies#zero-decimal">smallest currency unit</a>.
-   */
   @SerializedName("amount_details")
   AmountDetails amountDetails;
 
@@ -103,7 +98,7 @@ public class Transaction extends ApiResource
   String merchantCurrency;
 
   @SerializedName("merchant_data")
-  Authorization.MerchantData merchantData;
+  MerchantData merchantData;
 
   /**
    * Set of <a href="https://stripe.com/docs/api/metadata">key-value pairs</a> that you can attach
@@ -122,7 +117,6 @@ public class Transaction extends ApiResource
   @SerializedName("object")
   String object;
 
-  /** Additional purchase information that is optionally provided by the merchant. */
   @SerializedName("purchase_details")
   PurchaseDetails purchaseDetails;
 
@@ -341,22 +335,55 @@ public class Transaction extends ApiResource
   @Getter
   @Setter
   @EqualsAndHashCode(callSuper = false)
+  public static class MerchantData extends StripeObject {
+    /**
+     * A categorization of the seller's type of business. See our <a
+     * href="https://stripe.com/docs/issuing/merchant-categories">merchant categories guide</a> for
+     * a list of possible values.
+     */
+    @SerializedName("category")
+    String category;
+
+    /** City where the seller is located. */
+    @SerializedName("city")
+    String city;
+
+    /** Country where the seller is located. */
+    @SerializedName("country")
+    String country;
+
+    /** Name of the seller. */
+    @SerializedName("name")
+    String name;
+
+    /** Identifier assigned to the seller by the card brand. */
+    @SerializedName("network_id")
+    String networkId;
+
+    /** Postal code where the seller is located. */
+    @SerializedName("postal_code")
+    String postalCode;
+
+    /** State where the seller is located. */
+    @SerializedName("state")
+    String state;
+  }
+
+  @Getter
+  @Setter
+  @EqualsAndHashCode(callSuper = false)
   public static class PurchaseDetails extends StripeObject {
-    /** Information about the flight that was purchased with this transaction. */
     @SerializedName("flight")
     Flight flight;
 
-    /** Information about fuel that was purchased with this transaction. */
     @SerializedName("fuel")
     Fuel fuel;
 
-    /** Information about lodging that was purchased with this transaction. */
     @SerializedName("lodging")
     Lodging lodging;
 
-    /** The line items in the purchase. */
     @SerializedName("receipt")
-    List<Transaction.PurchaseDetails.Receipt> receipt;
+    Receipt receipt;
 
     /** A merchant-specific order number. */
     @SerializedName("reference")
@@ -378,9 +405,8 @@ public class Transaction extends ApiResource
       @SerializedName("refundable")
       Boolean refundable;
 
-      /** The legs of the trip. */
       @SerializedName("segments")
-      List<Transaction.PurchaseDetails.Flight.Segments> segments;
+      Segments segments;
 
       /** The travel agency that issued the ticket. */
       @SerializedName("travel_agency")

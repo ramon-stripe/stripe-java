@@ -42,11 +42,8 @@ public class PaymentIntent extends ApiResource implements HasId, MetadataStore<P
   @SerializedName("amount_received")
   Long amountReceived;
 
-  /** ID of the Connect application that created the PaymentIntent. */
   @SerializedName("application")
-  @Getter(lombok.AccessLevel.NONE)
-  @Setter(lombok.AccessLevel.NONE)
-  ExpandableField<Application> application;
+  Application application;
 
   /**
    * The amount of the application fee (if any) for the resulting payment. See the PaymentIntents <a
@@ -168,10 +165,6 @@ public class PaymentIntent extends ApiResource implements HasId, MetadataStore<P
   @SerializedName("metadata")
   Map<String, String> metadata;
 
-  /**
-   * If present, this property tells you what actions you need to take in order for your customer to
-   * fulfill a payment using the provided source.
-   */
   @SerializedName("next_action")
   NextAction nextAction;
 
@@ -199,7 +192,6 @@ public class PaymentIntent extends ApiResource implements HasId, MetadataStore<P
   @Setter(lombok.AccessLevel.NONE)
   ExpandableField<PaymentMethod> paymentMethod;
 
-  /** Payment-method-specific configuration for this PaymentIntent. */
   @SerializedName("payment_method_options")
   PaymentMethodOptions paymentMethodOptions;
 
@@ -240,7 +232,6 @@ public class PaymentIntent extends ApiResource implements HasId, MetadataStore<P
   @SerializedName("setup_future_usage")
   String setupFutureUsage;
 
-  /** Shipping information for this PaymentIntent. */
   @SerializedName("shipping")
   ShippingDetails shipping;
 
@@ -277,11 +268,6 @@ public class PaymentIntent extends ApiResource implements HasId, MetadataStore<P
   @SerializedName("status")
   String status;
 
-  /**
-   * The data with which to automatically create a Transfer when the payment is finalized. See the
-   * PaymentIntents <a href="https://stripe.com/docs/payments/connected-accounts">use case for
-   * connected accounts</a> for details.
-   */
   @SerializedName("transfer_data")
   TransferData transferData;
 
@@ -292,24 +278,6 @@ public class PaymentIntent extends ApiResource implements HasId, MetadataStore<P
    */
   @SerializedName("transfer_group")
   String transferGroup;
-
-  /** Get ID of expandable {@code application} object. */
-  public String getApplication() {
-    return (this.application != null) ? this.application.getId() : null;
-  }
-
-  public void setApplication(String id) {
-    this.application = ApiResource.setExpandableFieldId(id, this.application);
-  }
-
-  /** Get expanded {@code application}. */
-  public Application getApplicationObject() {
-    return (this.application != null) ? this.application.getExpanded() : null;
-  }
-
-  public void setApplicationObject(Application expandableObject) {
-    this.application = new ExpandableField<Application>(expandableObject.getId(), expandableObject);
-  }
 
   /** Get ID of expandable {@code customer} object. */
   public String getCustomer() {
@@ -1052,6 +1020,28 @@ public class PaymentIntent extends ApiResource implements HasId, MetadataStore<P
   @Getter
   @Setter
   @EqualsAndHashCode(callSuper = false)
+  public static class Application extends StripeObject implements HasId {
+    /** Unique identifier for the object. */
+    @Getter(onMethod_ = {@Override})
+    @SerializedName("id")
+    String id;
+
+    /** The name of the application. */
+    @SerializedName("name")
+    String name;
+
+    /**
+     * String representing the object's type. Objects of the same type share the same value.
+     *
+     * <p>Equal to {@code application}.
+     */
+    @SerializedName("object")
+    String object;
+  }
+
+  @Getter
+  @Setter
+  @EqualsAndHashCode(callSuper = false)
   public static class NextAction extends StripeObject {
     @SerializedName("alipay_handle_redirect")
     NextActionAlipayHandleRedirect alipayHandleRedirect;
@@ -1072,6 +1062,52 @@ public class PaymentIntent extends ApiResource implements HasId, MetadataStore<P
      */
     @SerializedName("use_stripe_sdk")
     Map<String, Object> useStripeSdk;
+
+    @Getter
+    @Setter
+    @EqualsAndHashCode(callSuper = false)
+    public static class NextActionAlipayHandleRedirect extends StripeObject {
+      /**
+       * The native data to be used with Alipay SDK you must redirect your customer to in order to
+       * authenticate the payment in an Android App.
+       */
+      @SerializedName("native_data")
+      String nativeData;
+
+      /**
+       * The native URL you must redirect your customer to in order to authenticate the payment in
+       * an iOS App.
+       */
+      @SerializedName("native_url")
+      String nativeUrl;
+
+      /**
+       * If the customer does not exit their browser while authenticating, they will be redirected
+       * to this specified URL after completion.
+       */
+      @SerializedName("return_url")
+      String returnUrl;
+
+      /** The URL you must redirect your customer to in order to authenticate the payment. */
+      @SerializedName("url")
+      String url;
+    }
+
+    @Getter
+    @Setter
+    @EqualsAndHashCode(callSuper = false)
+    public static class NextActionRedirectToUrl extends StripeObject {
+      /**
+       * If the customer does not exit their browser while authenticating, they will be redirected
+       * to this specified URL after completion.
+       */
+      @SerializedName("return_url")
+      String returnUrl;
+
+      /** The URL you must redirect your customer to in order to authenticate the payment. */
+      @SerializedName("url")
+      String url;
+    }
   }
 
   @Getter
@@ -1155,12 +1191,6 @@ public class PaymentIntent extends ApiResource implements HasId, MetadataStore<P
     @Setter
     @EqualsAndHashCode(callSuper = false)
     public static class Card extends StripeObject {
-      /**
-       * Installment details for this payment (Mexico only).
-       *
-       * <p>For more information, see the <a
-       * href="https://stripe.com/docs/payments/installments">installments integration guide</a>.
-       */
       @SerializedName("installments")
       Installments installments;
 
@@ -1191,15 +1221,13 @@ public class PaymentIntent extends ApiResource implements HasId, MetadataStore<P
       @Setter
       @EqualsAndHashCode(callSuper = false)
       public static class Installments extends StripeObject {
-        /** Installment plans that may be selected for this PaymentIntent. */
         @SerializedName("available_plans")
-        List<PaymentIntent.PaymentMethodOptions.Card.Installments.Plan> availablePlans;
+        Plan availablePlans;
 
         /** Whether Installments are enabled for this PaymentIntent. */
         @SerializedName("enabled")
         Boolean enabled;
 
-        /** Installment plan selected for this PaymentIntent. */
         @SerializedName("plan")
         Plan plan;
 
@@ -1226,6 +1254,65 @@ public class PaymentIntent extends ApiResource implements HasId, MetadataStore<P
           String type;
         }
       }
+    }
+  }
+
+  @Getter
+  @Setter
+  @EqualsAndHashCode(callSuper = false)
+  public static class ShippingDetails extends StripeObject {
+    @SerializedName("address")
+    Address address;
+
+    /** The delivery service that shipped a physical product, such as Fedex, UPS, USPS, etc. */
+    @SerializedName("carrier")
+    String carrier;
+
+    /** Recipient name. */
+    @SerializedName("name")
+    String name;
+
+    /** Recipient phone (including extension). */
+    @SerializedName("phone")
+    String phone;
+
+    /**
+     * The tracking number for a physical product, obtained from the delivery service. If multiple
+     * tracking numbers were generated for this purchase, please separate them with commas.
+     */
+    @SerializedName("tracking_number")
+    String trackingNumber;
+
+    @Getter
+    @Setter
+    @EqualsAndHashCode(callSuper = false)
+    public static class Address extends StripeObject {
+      /** City, district, suburb, town, or village. */
+      @SerializedName("city")
+      String city;
+
+      /**
+       * Two-letter country code (<a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2">ISO
+       * 3166-1 alpha-2</a>).
+       */
+      @SerializedName("country")
+      String country;
+
+      /** Address line 1 (e.g., street, PO Box, or company name). */
+      @SerializedName("line1")
+      String line1;
+
+      /** Address line 2 (e.g., apartment, suite, unit, or building). */
+      @SerializedName("line2")
+      String line2;
+
+      /** ZIP or postal code. */
+      @SerializedName("postal_code")
+      String postalCode;
+
+      /** State, county, province, or region. */
+      @SerializedName("state")
+      String state;
     }
   }
 

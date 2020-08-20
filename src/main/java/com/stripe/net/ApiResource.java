@@ -9,9 +9,8 @@ import com.stripe.exception.InvalidRequestException;
 import com.stripe.exception.StripeException;
 import com.stripe.model.EphemeralKey;
 import com.stripe.model.EphemeralKeyDeserializer;
-import com.stripe.model.EventData;
+import com.stripe.model.Event;
 import com.stripe.model.EventDataDeserializer;
-import com.stripe.model.EventRequest;
 import com.stripe.model.EventRequestDeserializer;
 import com.stripe.model.ExpandableField;
 import com.stripe.model.ExpandableFieldDeserializer;
@@ -45,8 +44,8 @@ public abstract class ApiResource extends StripeObject {
         new GsonBuilder()
             .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
             .registerTypeAdapter(EphemeralKey.class, new EphemeralKeyDeserializer())
-            .registerTypeAdapter(EventData.class, new EventDataDeserializer())
-            .registerTypeAdapter(EventRequest.class, new EventRequestDeserializer())
+            .registerTypeAdapter(Event.EventData.class, new EventDataDeserializer())
+            .registerTypeAdapter(Event.EventRequest.class, new EventRequestDeserializer())
             .registerTypeAdapter(ExpandableField.class, new ExpandableFieldDeserializer())
             .registerTypeAdapter(StripeRawJsonObject.class, new StripeRawJsonObjectDeserializer());
 

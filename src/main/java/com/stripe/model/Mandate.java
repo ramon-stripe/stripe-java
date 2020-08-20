@@ -224,6 +224,38 @@ public class Mandate extends ApiResource implements HasId {
     @Getter
     @Setter
     @EqualsAndHashCode(callSuper = false)
+    public static class AuBecsDebit extends StripeObject {
+      /**
+       * The URL of the mandate. This URL generally contains sensitive information about the
+       * customer and should be shared with them exclusively.
+       */
+      @SerializedName("url")
+      String url;
+    }
+
+    @Getter
+    @Setter
+    @EqualsAndHashCode(callSuper = false)
+    public static class BacsDebit extends StripeObject {
+      /**
+       * The status of the mandate on the Bacs network. Can be one of {@code pending}, {@code
+       * revoked}, {@code refused}, or {@code accepted}.
+       */
+      @SerializedName("network_status")
+      String networkStatus;
+
+      /** The unique reference identifying the mandate on the Bacs network. */
+      @SerializedName("reference")
+      String reference;
+
+      /** The URL that will contain the mandate that the customer has signed. */
+      @SerializedName("url")
+      String url;
+    }
+
+    @Getter
+    @Setter
+    @EqualsAndHashCode(callSuper = false)
     public static class Card extends StripeObject {}
 
     @Getter

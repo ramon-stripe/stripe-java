@@ -10,7 +10,6 @@ import com.stripe.param.PlanListParams;
 import com.stripe.param.PlanRetrieveParams;
 import com.stripe.param.PlanUpdateParams;
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Map;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -129,12 +128,8 @@ public class Plan extends ApiResource implements HasId, MetadataStore<Plan> {
   @Setter(lombok.AccessLevel.NONE)
   ExpandableField<Product> product;
 
-  /**
-   * Each element represents a pricing tier. This parameter requires {@code billing_scheme} to be
-   * set to {@code tiered}. See also the documentation for {@code billing_scheme}.
-   */
   @SerializedName("tiers")
-  List<Plan.Tier> tiers;
+  Tier tiers;
 
   /**
    * Defines if the tiering price should be {@code graduated} or {@code volume} based. In {@code
@@ -146,10 +141,6 @@ public class Plan extends ApiResource implements HasId, MetadataStore<Plan> {
   @SerializedName("tiers_mode")
   String tiersMode;
 
-  /**
-   * Apply a transformation to the reported usage or set quantity before computing the amount
-   * billed. Cannot be combined with {@code tiers}.
-   */
   @SerializedName("transform_usage")
   TransformUsage transformUsage;
 

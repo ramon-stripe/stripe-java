@@ -15,7 +15,6 @@ final class EventDataClassLookup {
     classLookup.put("account_link", AccountLink.class);
     classLookup.put("alipay_account", AlipayAccount.class);
     classLookup.put("apple_pay_domain", ApplePayDomain.class);
-    classLookup.put("application", Application.class);
     classLookup.put("application_fee", ApplicationFee.class);
     classLookup.put("balance", Balance.class);
     classLookup.put("balance_transaction", BalanceTransaction.class);
@@ -32,7 +31,6 @@ final class EventDataClassLookup {
     classLookup.put("credit_note_line_item", CreditNoteLineItem.class);
     classLookup.put("customer", Customer.class);
     classLookup.put("customer_balance_transaction", CustomerBalanceTransaction.class);
-    classLookup.put("discount", Discount.class);
     classLookup.put("dispute", Dispute.class);
     classLookup.put("ephemeral_key", EphemeralKey.class);
     classLookup.put("event", Event.class);
@@ -48,7 +46,6 @@ final class EventDataClassLookup {
     classLookup.put("login_link", LoginLink.class);
     classLookup.put("mandate", Mandate.class);
     classLookup.put("order", Order.class);
-    classLookup.put("order_item", OrderItem.class);
     classLookup.put("order_return", OrderReturn.class);
     classLookup.put("payment_intent", PaymentIntent.class);
     classLookup.put("payment_method", PaymentMethod.class);
@@ -66,7 +63,6 @@ final class EventDataClassLookup {
     classLookup.put("setup_intent", SetupIntent.class);
     classLookup.put("sku", Sku.class);
     classLookup.put("source", Source.class);
-    classLookup.put("source_mandate_notification", SourceMandateNotification.class);
     classLookup.put("source_transaction", SourceTransaction.class);
     classLookup.put("subscription", Subscription.class);
     classLookup.put("subscription_item", SubscriptionItem.class);

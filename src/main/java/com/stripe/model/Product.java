@@ -9,6 +9,7 @@ import com.stripe.param.ProductCreateParams;
 import com.stripe.param.ProductListParams;
 import com.stripe.param.ProductRetrieveParams;
 import com.stripe.param.ProductUpdateParams;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import lombok.EqualsAndHashCode;
@@ -100,11 +101,6 @@ public class Product extends ApiResource implements HasId, MetadataStore<Product
   @SerializedName("object")
   String object;
 
-  /**
-   * The dimensions of this product for shipping purposes. A SKU associated with this product can
-   * override this value by having its own {@code package_dimensions}. Only applicable to products
-   * of {@code type=good}.
-   */
   @SerializedName("package_dimensions")
   PackageDimensions packageDimensions;
 
@@ -338,5 +334,26 @@ public class Product extends ApiResource implements HasId, MetadataStore<Product
             String.format("/v1/products/%s", ApiResource.urlEncodeId(this.getId())));
     return ApiResource.request(
         ApiResource.RequestMethod.DELETE, url, params, Product.class, options);
+  }
+
+  @Getter
+  @Setter
+  @EqualsAndHashCode(callSuper = false)
+  public static class PackageDimensions extends StripeObject {
+    /** Height, in inches. */
+    @SerializedName("height")
+    BigDecimal height;
+
+    /** Length, in inches. */
+    @SerializedName("length")
+    BigDecimal length;
+
+    /** Weight, in ounces. */
+    @SerializedName("weight")
+    BigDecimal weight;
+
+    /** Width, in inches. */
+    @SerializedName("width")
+    BigDecimal width;
   }
 }

@@ -11,7 +11,6 @@ import com.stripe.param.SourceRetrieveParams;
 import com.stripe.param.SourceSourceTransactionsParams;
 import com.stripe.param.SourceUpdateParams;
 import com.stripe.param.SourceVerifyParams;
-import java.util.List;
 import java.util.Map;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -131,10 +130,6 @@ public class Source extends ApiResource implements MetadataStore<Source>, Paymen
   @SerializedName("object")
   String object;
 
-  /**
-   * Information about the owner of the payment instrument that may be used or required by
-   * particular source types.
-   */
   @SerializedName("owner")
   Owner owner;
 
@@ -922,12 +917,105 @@ public class Source extends ApiResource implements MetadataStore<Source>, Paymen
     @SerializedName("email")
     String email;
 
-    /** List of items constituting the order. */
     @SerializedName("items")
-    List<Source.OrderItem> items;
+    OrderItem items;
 
     @SerializedName("shipping")
     ShippingDetails shipping;
+
+    @Getter
+    @Setter
+    @EqualsAndHashCode(callSuper = false)
+    public static class OrderItem extends StripeObject {
+      /** The amount (price) for this order item. */
+      @SerializedName("amount")
+      Long amount;
+
+      /** This currency of this order item. Required when {@code amount} is present. */
+      @SerializedName("currency")
+      String currency;
+
+      /** Human-readable description for this order item. */
+      @SerializedName("description")
+      String description;
+
+      /**
+       * The ID of the associated object for this line item. Expandable if not null (e.g.,
+       * expandable to a SKU).
+       */
+      @SerializedName("parent")
+      String parent;
+
+      /**
+       * The quantity of this order item. When type is {@code sku}, this is the number of instances
+       * of the SKU to be ordered.
+       */
+      @SerializedName("quantity")
+      Long quantity;
+
+      /** The type of this order item. Must be {@code sku}, {@code tax}, or {@code shipping}. */
+      @SerializedName("type")
+      String type;
+    }
+
+    @Getter
+    @Setter
+    @EqualsAndHashCode(callSuper = false)
+    public static class ShippingDetails extends StripeObject {
+      @SerializedName("address")
+      Address address;
+
+      /** The delivery service that shipped a physical product, such as Fedex, UPS, USPS, etc. */
+      @SerializedName("carrier")
+      String carrier;
+
+      /** Recipient name. */
+      @SerializedName("name")
+      String name;
+
+      /** Recipient phone (including extension). */
+      @SerializedName("phone")
+      String phone;
+
+      /**
+       * The tracking number for a physical product, obtained from the delivery service. If multiple
+       * tracking numbers were generated for this purchase, please separate them with commas.
+       */
+      @SerializedName("tracking_number")
+      String trackingNumber;
+
+      @Getter
+      @Setter
+      @EqualsAndHashCode(callSuper = false)
+      public static class Address extends StripeObject {
+        /** City, district, suburb, town, or village. */
+        @SerializedName("city")
+        String city;
+
+        /**
+         * Two-letter country code (<a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2">ISO
+         * 3166-1 alpha-2</a>).
+         */
+        @SerializedName("country")
+        String country;
+
+        /** Address line 1 (e.g., street, PO Box, or company name). */
+        @SerializedName("line1")
+        String line1;
+
+        /** Address line 2 (e.g., apartment, suite, unit, or building). */
+        @SerializedName("line2")
+        String line2;
+
+        /** ZIP or postal code. */
+        @SerializedName("postal_code")
+        String postalCode;
+
+        /** State, county, province, or region. */
+        @SerializedName("state")
+        String state;
+      }
+    }
   }
 
   @Getter
@@ -969,7 +1057,6 @@ public class Source extends ApiResource implements MetadataStore<Source>, Paymen
   @Setter
   @EqualsAndHashCode(callSuper = false)
   public static class Owner extends StripeObject {
-    /** Owner's address. */
     @SerializedName("address")
     Address address;
 
@@ -985,11 +1072,6 @@ public class Source extends ApiResource implements MetadataStore<Source>, Paymen
     @SerializedName("phone")
     String phone;
 
-    /**
-     * Verified owner's address. Verified values are verified or provided by the payment method
-     * directly (and if supported) at the time of authorization or settlement. They cannot be set or
-     * mutated.
-     */
     @SerializedName("verified_address")
     Address verifiedAddress;
 
@@ -1016,6 +1098,38 @@ public class Source extends ApiResource implements MetadataStore<Source>, Paymen
      */
     @SerializedName("verified_phone")
     String verifiedPhone;
+
+    @Getter
+    @Setter
+    @EqualsAndHashCode(callSuper = false)
+    public static class Address extends StripeObject {
+      /** City, district, suburb, town, or village. */
+      @SerializedName("city")
+      String city;
+
+      /**
+       * Two-letter country code (<a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2">ISO
+       * 3166-1 alpha-2</a>).
+       */
+      @SerializedName("country")
+      String country;
+
+      /** Address line 1 (e.g., street, PO Box, or company name). */
+      @SerializedName("line1")
+      String line1;
+
+      /** Address line 2 (e.g., apartment, suite, unit, or building). */
+      @SerializedName("line2")
+      String line2;
+
+      /** ZIP or postal code. */
+      @SerializedName("postal_code")
+      String postalCode;
+
+      /** State, county, province, or region. */
+      @SerializedName("state")
+      String state;
+    }
   }
 
   @Getter
