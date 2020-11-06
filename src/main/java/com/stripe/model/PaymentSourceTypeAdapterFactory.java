@@ -25,18 +25,19 @@ public class PaymentSourceTypeAdapterFactory implements TypeAdapterFactory {
     }
     final String discriminator = "object";
     final TypeAdapter<JsonElement> jsonElementAdapter = gson.getAdapter(JsonElement.class);
-    final TypeAdapter<PaymentSource> paymentSourceAdapter =
+    final TypeAdapter<com.stripe.model.PaymentSource> paymentSourceAdapter =
         gson.getDelegateAdapter(this, TypeToken.get(PaymentSource.class));
-    final TypeAdapter<Account> accountAdapter =
+    final TypeAdapter<com.stripe.model.Account> accountAdapter =
         gson.getDelegateAdapter(this, TypeToken.get(Account.class));
-    final TypeAdapter<AlipayAccount> alipayAccountAdapter =
+    final TypeAdapter<com.stripe.model.AlipayAccount> alipayAccountAdapter =
         gson.getDelegateAdapter(this, TypeToken.get(AlipayAccount.class));
-    final TypeAdapter<BankAccount> bankAccountAdapter =
+    final TypeAdapter<com.stripe.model.BankAccount> bankAccountAdapter =
         gson.getDelegateAdapter(this, TypeToken.get(BankAccount.class));
-    final TypeAdapter<BitcoinReceiver> bitcoinReceiverAdapter =
+    final TypeAdapter<com.stripe.model.BitcoinReceiver> bitcoinReceiverAdapter =
         gson.getDelegateAdapter(this, TypeToken.get(BitcoinReceiver.class));
-    final TypeAdapter<Card> cardAdapter = gson.getDelegateAdapter(this, TypeToken.get(Card.class));
-    final TypeAdapter<Source> sourceAdapter =
+    final TypeAdapter<com.stripe.model.Card> cardAdapter =
+        gson.getDelegateAdapter(this, TypeToken.get(Card.class));
+    final TypeAdapter<com.stripe.model.Source> sourceAdapter =
         gson.getDelegateAdapter(this, TypeToken.get(Source.class));
 
     TypeAdapter<PaymentSource> resultCustomTypeAdapter =
