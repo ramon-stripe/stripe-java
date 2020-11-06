@@ -40,11 +40,11 @@ public class BalanceTransactionSourceTypeAdapterFactory implements TypeAdapterFa
         gson.getDelegateAdapter(this, TypeToken.get(Dispute.class));
     final TypeAdapter<com.stripe.model.FeeRefund> feeRefundAdapter =
         gson.getDelegateAdapter(this, TypeToken.get(FeeRefund.class));
-    final TypeAdapter<com.stripe.model.issuing.Authorization> authorizationAdapter =
+    final TypeAdapter<com.stripe.model.issuing.Authorization> issuingAuthorizationAdapter =
         gson.getDelegateAdapter(this, TypeToken.get(Authorization.class));
-    final TypeAdapter<com.stripe.model.issuing.Dispute> disputeAdapter =
+    final TypeAdapter<com.stripe.model.issuing.Dispute> issuingDisputeAdapter =
         gson.getDelegateAdapter(this, TypeToken.get(Dispute.class));
-    final TypeAdapter<com.stripe.model.issuing.Transaction> transactionAdapter =
+    final TypeAdapter<com.stripe.model.issuing.Transaction> issuingTransactionAdapter =
         gson.getDelegateAdapter(this, TypeToken.get(Transaction.class));
     final TypeAdapter<com.stripe.model.Payout> payoutAdapter =
         gson.getDelegateAdapter(this, TypeToken.get(Payout.class));
