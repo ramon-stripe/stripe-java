@@ -1,5 +1,11 @@
 # Changelog
 
+## 7.63.1 - 2020-17-11
+* Identical to 7.29.0.
+
+## 7.63.0 - 2020-17-11
+* Published in error. Identical to 20.27.0.
+
 ## 7.29.0 - 2019-03-18
 * [#695](https://github.com/stripe/stripe-java/pull/695) Add support for `payment_intent` on `Charge`.
 
