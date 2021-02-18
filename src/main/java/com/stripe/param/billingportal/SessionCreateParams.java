@@ -33,8 +33,8 @@ public class SessionCreateParams extends ApiRequestParams {
   Map<String, Object> extraParams;
 
   /**
-   * The {@code on_behalf_of} to use in the portal. When specified, only subscriptions and invoices
-   * with this {@code on_behalf_of} will appear. For more information, see the <a
+   * The {@code on_behalf_of} account to use in the portal. When specified, only subscriptions and
+   * invoices with this {@code on_behalf_of} account will appear. For more information, see the <a
    * href="https://stripe.com/docs/connect/charges-transfers#on-behalf-of">docs</a>.
    */
   @SerializedName("on_behalf_of")
@@ -155,8 +155,8 @@ public class SessionCreateParams extends ApiRequestParams {
     }
 
     /**
-     * The {@code on_behalf_of} to use in the portal. When specified, only subscriptions and
-     * invoices with this {@code on_behalf_of} will appear. For more information, see the <a
+     * The {@code on_behalf_of} account to use in the portal. When specified, only subscriptions and
+     * invoices with this {@code on_behalf_of} account will appear. For more information, see the <a
      * href="https://stripe.com/docs/connect/charges-transfers#on-behalf-of">docs</a>.
      */
     public Builder setOnBehalfOf(String onBehalfOf) {

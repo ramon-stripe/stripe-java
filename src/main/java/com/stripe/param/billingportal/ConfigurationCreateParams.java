@@ -536,7 +536,10 @@ public class ConfigurationCreateParams extends ApiRequestParams {
         PHONE("phone"),
 
         @SerializedName("shipping")
-        SHIPPING("shipping");
+        SHIPPING("shipping"),
+
+        @SerializedName("tax_id")
+        TAX_ID("tax_id");
 
         @Getter(onMethod_ = {@Override})
         private final String value;
@@ -708,7 +711,9 @@ public class ConfigurationCreateParams extends ApiRequestParams {
 
       /**
        * Whether to create prorations when canceling subscriptions. Possible values are {@code none}
-       * and {@code create_prorations}.
+       * and {@code create_prorations}, which is only compatible with {@code mode=immediately}. No
+       * prorations are generated when canceling a subscription at the end of its natural billing
+       * period.
        */
       @SerializedName("proration_behavior")
       ProrationBehavior prorationBehavior;
@@ -785,7 +790,9 @@ public class ConfigurationCreateParams extends ApiRequestParams {
 
         /**
          * Whether to create prorations when canceling subscriptions. Possible values are {@code
-         * none} and {@code create_prorations}.
+         * none} and {@code create_prorations}, which is only compatible with {@code
+         * mode=immediately}. No prorations are generated when canceling a subscription at the end
+         * of its natural billing period.
          */
         public Builder setProrationBehavior(ProrationBehavior prorationBehavior) {
           this.prorationBehavior = prorationBehavior;
@@ -1058,7 +1065,7 @@ public class ConfigurationCreateParams extends ApiRequestParams {
         @SerializedName(ApiRequestParams.EXTRA_PARAMS_KEY)
         Map<String, Object> extraParams;
 
-        /** The list of prices which, when subscribed to, a subscription can be updated. */
+        /** The list of prices IDs that a subscription can be updated to. */
         @SerializedName("prices")
         List<String> prices;
 

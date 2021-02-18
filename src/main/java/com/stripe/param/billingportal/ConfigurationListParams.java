@@ -12,7 +12,7 @@ import lombok.Getter;
 @Getter
 public class ConfigurationListParams extends ApiRequestParams {
   /**
-   * Only return configurations that are active or inactive (e.g., pass {@code true} to list all
+   * Only return configurations that are active or inactive (e.g., pass {@code true} to list only
    * active configurations).
    */
   @SerializedName("active")
@@ -40,7 +40,10 @@ public class ConfigurationListParams extends ApiRequestParams {
   @SerializedName(ApiRequestParams.EXTRA_PARAMS_KEY)
   Map<String, Object> extraParams;
 
-  /** Only return the default or non-default configurations. */
+  /**
+   * Only return the default or non-default configurations (e.g., pass {@code true} to list only the
+   * default configuration).
+   */
   @SerializedName("is_default")
   Boolean isDefault;
 
@@ -109,7 +112,7 @@ public class ConfigurationListParams extends ApiRequestParams {
     }
 
     /**
-     * Only return configurations that are active or inactive (e.g., pass {@code true} to list all
+     * Only return configurations that are active or inactive (e.g., pass {@code true} to list only
      * active configurations).
      */
     public Builder setActive(Boolean active) {
@@ -180,7 +183,10 @@ public class ConfigurationListParams extends ApiRequestParams {
       return this;
     }
 
-    /** Only return the default or non-default configurations. */
+    /**
+     * Only return the default or non-default configurations (e.g., pass {@code true} to list only
+     * the default configuration).
+     */
     public Builder setIsDefault(Boolean isDefault) {
       this.isDefault = isDefault;
       return this;

@@ -38,7 +38,7 @@ public class Configuration extends ApiResource implements HasId {
   Long created;
 
   /**
-   * The default url to redirect customers after they manage their account. This can also be
+   * The default URL to redirect customers to after they manage their account. This can also be
    * overriden in the session.
    */
   @SerializedName("default_return_url")
@@ -54,7 +54,7 @@ public class Configuration extends ApiResource implements HasId {
 
   /**
    * Whether the configuration is the default. If {@code true}, this configuration can be managed in
-   * the dashboard and portal sessions will use this configuration unless it is overriden in the
+   * the Dashboard and portal sessions will use this configuration unless it is overriden in the
    * session.
    */
   @SerializedName("is_default")
@@ -79,24 +79,24 @@ public class Configuration extends ApiResource implements HasId {
   @SerializedName("updated")
   Long updated;
 
-  /** Returns a list of PortalConfigurations. */
+  /** Returns a list of configurations that describe the functionality of the customer portal. */
   public ConfigurationCollection list(Map<String, Object> params) throws StripeException {
     return list(params, (RequestOptions) null);
   }
 
-  /** Returns a list of PortalConfigurations. */
+  /** Returns a list of configurations that describe the functionality of the customer portal. */
   public ConfigurationCollection list(Map<String, Object> params, RequestOptions options)
       throws StripeException {
     String url = String.format("%s%s", Stripe.getApiBase(), "/v1/billing_portal/configurations");
     return ApiResource.requestCollection(url, params, ConfigurationCollection.class, options);
   }
 
-  /** Returns a list of PortalConfigurations. */
+  /** Returns a list of configurations that describe the functionality of the customer portal. */
   public ConfigurationCollection list(ConfigurationListParams params) throws StripeException {
     return list(params, (RequestOptions) null);
   }
 
-  /** Returns a list of PortalConfigurations. */
+  /** Returns a list of configurations that describe the functionality of the customer portal. */
   public ConfigurationCollection list(ConfigurationListParams params, RequestOptions options)
       throws StripeException {
     String url = String.format("%s%s", Stripe.getApiBase(), "/v1/billing_portal/configurations");
@@ -129,12 +129,12 @@ public class Configuration extends ApiResource implements HasId {
         ApiResource.RequestMethod.POST, url, params, Configuration.class, options);
   }
 
-  /** Updates a configuration that describes the functionality and behavior of a PortalSession. */
+  /** Updates a configuration that describes the functionality of the customer portal. */
   public Configuration update(Map<String, Object> params) throws StripeException {
     return update(params, (RequestOptions) null);
   }
 
-  /** Updates a configuration that describes the functionality and behavior of a PortalSession. */
+  /** Updates a configuration that describes the functionality of the customer portal. */
   public Configuration update(Map<String, Object> params, RequestOptions options)
       throws StripeException {
     String url =
@@ -147,12 +147,12 @@ public class Configuration extends ApiResource implements HasId {
         ApiResource.RequestMethod.POST, url, params, Configuration.class, options);
   }
 
-  /** Updates a configuration that describes the functionality and behavior of a PortalSession. */
+  /** Updates a configuration that describes the functionality of the customer portal. */
   public Configuration update(ConfigurationUpdateParams params) throws StripeException {
     return update(params, (RequestOptions) null);
   }
 
-  /** Updates a configuration that describes the functionality and behavior of a PortalSession. */
+  /** Updates a configuration that describes the functionality of the customer portal. */
   public Configuration update(ConfigurationUpdateParams params, RequestOptions options)
       throws StripeException {
     String url =
@@ -165,18 +165,18 @@ public class Configuration extends ApiResource implements HasId {
         ApiResource.RequestMethod.POST, url, params, Configuration.class, options);
   }
 
-  /** Retrieves a configuration that describes the functionality and behavior of a PortalSession. */
+  /** Retrieves a configuration that describes the functionality of the customer portal. */
   public Configuration retrieve(String configuration) throws StripeException {
     return retrieve(configuration, (Map<String, Object>) null, (RequestOptions) null);
   }
 
-  /** Retrieves a configuration that describes the functionality and behavior of a PortalSession. */
+  /** Retrieves a configuration that describes the functionality of the customer portal. */
   public Configuration retrieve(String configuration, RequestOptions options)
       throws StripeException {
     return retrieve(configuration, (Map<String, Object>) null, options);
   }
 
-  /** Retrieves a configuration that describes the functionality and behavior of a PortalSession. */
+  /** Retrieves a configuration that describes the functionality of the customer portal. */
   public Configuration retrieve(
       String configuration, Map<String, Object> params, RequestOptions options)
       throws StripeException {
@@ -190,7 +190,7 @@ public class Configuration extends ApiResource implements HasId {
         ApiResource.RequestMethod.GET, url, params, Configuration.class, options);
   }
 
-  /** Retrieves a configuration that describes the functionality and behavior of a PortalSession. */
+  /** Retrieves a configuration that describes the functionality of the customer portal. */
   public Configuration retrieve(
       String configuration, ConfigurationRetrieveParams params, RequestOptions options)
       throws StripeException {
@@ -229,7 +229,7 @@ public class Configuration extends ApiResource implements HasId {
     CustomerUpdate customerUpdate;
 
     @SerializedName("invoice_history")
-    InvoiceList invoiceHistory;
+    InvoiceHistory invoiceHistory;
 
     @SerializedName("payment_method_update")
     PaymentMethodUpdate paymentMethodUpdate;
@@ -258,7 +258,7 @@ public class Configuration extends ApiResource implements HasId {
     @Getter
     @Setter
     @EqualsAndHashCode(callSuper = false)
-    public static class InvoiceList extends StripeObject {
+    public static class InvoiceHistory extends StripeObject {
       /** Whether the feature is enabled. */
       @SerializedName("enabled")
       Boolean enabled;
